@@ -125,12 +125,60 @@ li:hover {
 	text-align: center;
 	margin-bottom: 1em;
 }
+
+.categories {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.categories ul {
+    list-style: none;
+    padding: 0;
+	margin: 0 0 35px 0;
+    display: flex;
+}
+
+.categories li {
+	font-family: 'Syne';
+	color: #1D6154;
+    margin-right: 10px;
+    cursor: pointer;
+	border: 1px solid #1D6154;
+	border-radius: 60px;
+	padding: 8px 20px;
+}
+
+.categories li:hover {
+	background-color: #1D6154;
+	transition: background-color 0.3s ease;
+	color: white;
+}
+
 .gallery {
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-column-gap: 20px;
 	grid-row-gap: 20px;
+	text-align: center;
+}
+
+.gallery .work {
+	display: flex;
+	flex-direction: column-reverse;
+	align-items: flex-start;
+}
+
+.gallery h2 {
+	font-family: 'Work Sans' ;
+	font-weight: 400;
+	font-size: 13px;
+	margin-top: 10px;
+}
+
+.gallery p {
+	display: none;
 }
 
 .gallery img {
