@@ -26,17 +26,19 @@ function ajoutListenerLogin() {
             return response.json();
         })
         .then(data => {
+            console.log(data);  // Afficher la réponse dans la console
             if (data.token) {
                 // Authentification réussie, stocker le token dans localStorage
                 localStorage.setItem('token', data.token);
+                console.log("Authentification réussie");
                 window.location.href = "./index.html";
             } else {
-                // Affiche un message d'erreur si le token n'est pas présent dans la réponse
                 alert("Erreur dans l'identifiant ou le mot de passe");
             }
         })
         .catch(error => {
             console.error("Erreur lors de l'authentification", error);
+            alert("Erreur dans l’identifiant ou le mot de passe");
         });
     });
 }
