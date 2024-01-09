@@ -1,3 +1,5 @@
+function setupGallery () {
+
 // Fonction pour récupérer les données de l'API
 function fetchData(apiEndpoint) {
     return fetch(apiEndpoint)
@@ -13,16 +15,14 @@ const worksPromise = fetchData("http://localhost:5678/api/works");
 // Appel de la fonction fetchData avec l'URL de l'API des catégories
 const categoriesPromise = fetchData("http://localhost:5678/api/categories");
 
-
-// Utiliser Promise.all pour attendre que les deux appels soient terminés
+// Utiliser Promise.all pour attendre que les 2 appels soient terminés
 Promise.all([worksPromise, categoriesPromise])
     .then(([worksData, categoriesData]) => {
-        // Organiser les données des catégories dans un objet
+        // Organisation des données des catégories dans un objet
         const categoriesById = {};
         categoriesData.forEach(category => {
             categoriesById[category.id] = category;
         });
-
         displayWorksWithCategories(worksData, categoriesById);  // Afficher les travaux avec les catégories
     })
     .catch(error => {
@@ -130,3 +130,5 @@ function displayFilteredWorks(filteredWorks, categoriesById) {
         gallery.appendChild(workContainer);
     });
 }
+}
+setupGallery();

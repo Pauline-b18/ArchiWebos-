@@ -1,3 +1,5 @@
+setupGallery();
+
 function ajoutListenerLogin() {
     const formLogin = document.querySelector(".form-login");
     formLogin.addEventListener("submit", function (event) {
@@ -31,7 +33,32 @@ function ajoutListenerLogin() {
                 // Authentification réussie, stocker le token dans localStorage
                 localStorage.setItem('token', data.token);
                 console.log("Authentification réussie");
+
+                // délai avant les modifications sur le DOM
+            setTimeout(() => {
+                // Redirection vers la page index.html
                 window.location.href = "./index.html";
+                // Modifications sur la page index.html
+                const blackBar = document.querySelector('.black-bar');
+                const logoutButton = document.querySelector('.logout-button');
+                const loginButton = document.querySelector('.login-button');
+                const editButton = document.querySelector('.edit-button');
+                const categoriesContainer = document.querySelector('.categories');
+
+                // Affichage de la black-bar
+                blackBar.style.display = 'block';
+
+                // Affichage du bouton logout et masquage du bouton login
+                logoutButton.style.display = 'block';
+                loginButton.style.display = 'none';
+
+                // Affichage du bouton d'édition
+                editButton.style.display = 'block';
+
+                // Masquage des filtres
+                categoriesContainer.style.display = 'none';
+            }, 1000);
+                
             } else {
                 alert("Erreur dans l'identifiant ou le mot de passe");
             }

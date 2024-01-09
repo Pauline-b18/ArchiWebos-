@@ -47,12 +47,31 @@ table {
 	border-spacing: 0;
 }
 /** end reset css**/
-body {
+.black-bar {
+	border: solid 1px;
+	height: 60px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: black;
+	display: none; /*afficher quand connecté*/
+}
+
+.black-bar i, .black-bar p {
+	color: rgb(255, 255, 255);
+}
+
+.black-bar i {
+	margin-right: 10px;
+}
+
+.main-container {
 	max-width: 1140px;
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
@@ -61,6 +80,7 @@ header {
 
 header a {
 	text-decoration: none;
+	color: black;
 }
 section {
 	margin: 50px 0
@@ -99,13 +119,15 @@ nav li {
 	font-size: 1.2em;
 }
 
-.login-button {
+nav .logout-button {
+	display: none;
+}
+
+li:hover, li a:hover{
+	color: #B1663C;
 	font-weight: bold;
 }
 
-li:hover {
-	color: #B1663C;
-}
 #introduction {
 	display: flex;
 	align-items: center;
@@ -129,9 +151,31 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
+
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
+}
+
+.edit-container {
+	display: flex;
+    align-items: center; 
+	justify-content: center;
+	margin-bottom: 3em;
+}
+
+.edit-button {
+	margin-left: 40px;
+	/*display: none;*/
+}
+
+.edit-button p {
+	margin-left: 10px;
+}
+
+#modal-button {
+	text-decoration: none;
+    display: flex; 
+    align-items: center;
 }
 
 .categories {
@@ -241,8 +285,12 @@ input[type="submit"]{
 	width: 180px;
 	text-align: center;
 	border-radius: 60px ;
+	transition: background-color 0.3s ease;
 }
 
+input[type="submit"]:hover {
+	background-color: #0E2F28 ;
+}
 
 footer nav ul {
 	display: flex;
