@@ -1,5 +1,3 @@
-function setupGallery () {
-
 // Fonction pour récupérer les données de l'API
 function fetchData(apiEndpoint) {
     return fetch(apiEndpoint)
@@ -8,6 +6,7 @@ function fetchData(apiEndpoint) {
             console.error('Erreur lors de la récupération des données:', error);
         });
 }
+
 
 // Appel de la fonction fetchData avec l'URL de l'API works
 const worksPromise = fetchData("http://localhost:5678/api/works");
@@ -28,6 +27,8 @@ Promise.all([worksPromise, categoriesPromise])
     .catch(error => {
         console.error('Une erreur s\'est produite:', error);
     });
+
+    
 
 // Fonction pour afficher les travaux avec les catégories sur la page
 function displayWorksWithCategories(works, categoriesById) {
@@ -130,5 +131,14 @@ function displayFilteredWorks(filteredWorks, categoriesById) {
         gallery.appendChild(workContainer);
     });
 }
+
+// Fonction pour vérifier la présence du token
+function checkAuthentication() {
+    const token = localStorage.getItem('token');
+    if (monToken) {
+        console.log('Le token existe dans le localStorage : ', monToken);
+    } else {
+        console.log('Le token n\'existe pas dans le localStorage.');
+    }
+    
 }
-setupGallery();
