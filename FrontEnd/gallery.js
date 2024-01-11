@@ -132,13 +132,39 @@ function displayFilteredWorks(filteredWorks, categoriesById) {
     });
 }
 
-// Fonction pour vérifier la présence du token
-function checkAuthentication() {
-    const token = localStorage.getItem('token');
-    if (monToken) {
-        console.log('Le token existe dans le localStorage : ', monToken);
-    } else {
-        console.log('Le token n\'existe pas dans le localStorage.');
-    }
+
+//Changer le contenu de la page si l'utilisateur est connecté
+function adminLog() {
+    const logout = document.querySelector(".logout-button");
+    const login = document.querySelector(".login-button");
     
-}
+    barAdmin = document.querySelector(".black-bar");
+    const btnModifier = document.querySelector(".modal-button");
+    const editButton = document.querySelector(".edit-button");
+  
+    const categories = document.querySelector(".categories");
+  
+  
+    if (localStorage.getItem('token')) {
+      logout.style.display = "block";
+      login.style.display = "none";
+      
+      barAdmin.style.display = "block";
+      btnModifier.style.display = "block";
+      editButton.style.display = "block"
+      categories.style.display = "none";
+      
+      
+  
+    } else {
+      logout.style.display = "none";
+      login.style.display = "block";
+  
+      barAdmin.style.display = "none";
+      btnModifier.style.display = "none";
+      editButton.style.display = "none"
+      categories.style.display = "flex";
+  
+    }}
+  
+adminLog();

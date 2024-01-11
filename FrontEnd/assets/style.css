@@ -165,7 +165,7 @@ li:hover, li a:hover{
 
 .edit-button {
 	margin-left: 40px;
-	/*display: none;*/
+	display: none; /** cacher **/
 }
 
 .edit-button p {
@@ -326,4 +326,3 @@ footer nav ul {
 	justify-content: flex-end;
 	margin: 2em
 }
-

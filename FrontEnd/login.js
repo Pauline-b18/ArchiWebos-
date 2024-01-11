@@ -29,7 +29,7 @@ function ajoutListenerLogin() {
             console.log(data);  // Afficher la réponse dans la console
             if (data.token) {
                 // Authentification réussie, stocker le token dans localStorage
-                localStorage.setItem('token', data.token);
+                window.localStorage.setItem('token', data.token);
                 console.log("Authentification réussie");
                 window.location.href = "./index.html";
             } else {
