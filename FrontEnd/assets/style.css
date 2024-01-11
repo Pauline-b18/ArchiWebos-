@@ -51,10 +51,23 @@ table {
 	border: solid 1px;
 	height: 60px;
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	background-color: black;
-	display: none; /*afficher quand connecté*/
+	display: none; 
+}
+
+.black-bar a {
+	height: 100%;
+	text-decoration: none;
+	color: rgb(255, 255, 255);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: "Work Sans";
+	font-weight: 400;
+}
+
+.black-bar p {
+	margin: 0;
 }
 
 .black-bar i, .black-bar p {
@@ -158,28 +171,44 @@ li:hover, li a:hover{
 
 .edit-container {
 	display: flex;
-    align-items: center; 
 	justify-content: center;
-	margin-bottom: 3em;
+	align-items: center;
+	height: 150px;
+	margin-top: 75px;
 }
 
-.edit-button {
+.modal-button {
+	text-decoration: none;
+	margin-left: 30px;
+	color: black;
+}
+
+.modal-button i {
+	margin-right: 10px;
+}
+
+.modal {
+	display: none;
+}
+
+.modif-button {
 	margin-left: 40px;
-	display: none; /** cacher **/
+	
 }
 
-.edit-button p {
+.modif-button p {
 	margin-left: 10px;
-}
+} 
 
 #modal-button {
 	text-decoration: none;
     display: flex; 
     align-items: center;
-}
+	
+} 
 
 /* The Modal (background) */
-.modal {
+.modal-content {
 	display: none; 
 	position: fixed; 
 	z-index: 1; 
@@ -192,7 +221,7 @@ li:hover, li a:hover{
 	background-color: rgba(0,0,0,0.4); 
 }
 
-.modal-content {
+.modal-works {
 	background-color: #fefefe;
 	margin: 15% auto; 
 	padding: 20px;
@@ -209,15 +238,15 @@ li:hover, li a:hover{
 
 .categories {
     display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .categories ul {
     list-style: none;
     padding: 0;
-	margin: 0 0 35px 0;
+	margin: 10px 0 50px 0;
     display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .categories li {

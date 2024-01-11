@@ -28,8 +28,6 @@ Promise.all([worksPromise, categoriesPromise])
         console.error('Une erreur s\'est produite:', error);
     });
 
-    
-
 // Fonction pour afficher les travaux avec les catégories sur la page
 function displayWorksWithCategories(works, categoriesById) {
     const gallery = document.querySelector('.gallery');
@@ -137,12 +135,11 @@ function displayFilteredWorks(filteredWorks, categoriesById) {
 function adminLog() {
     const logout = document.querySelector(".logout-button");
     const login = document.querySelector(".login-button");
-    
-    barAdmin = document.querySelector(".black-bar");
+    const barAdmin = document.querySelector(".black-bar");
+
     const btnModifier = document.querySelector(".modal-button");
-    const editButton = document.querySelector(".edit-button");
-  
-    const categories = document.querySelector(".categories");
+    const editButton = document.querySelector(".modal");
+    const categories = document.querySelector("#categories");
   
   
     if (localStorage.getItem('token')) {
@@ -151,7 +148,7 @@ function adminLog() {
       
       barAdmin.style.display = "block";
       btnModifier.style.display = "block";
-      editButton.style.display = "block"
+      editButton.style.display = "block";
       categories.style.display = "none";
       
       
@@ -162,8 +159,8 @@ function adminLog() {
   
       barAdmin.style.display = "none";
       btnModifier.style.display = "none";
-      editButton.style.display = "none"
-      categories.style.display = "flex";
+      editButton.style.display = "none";
+      categories.style.display = "block";
   
     }}
   
