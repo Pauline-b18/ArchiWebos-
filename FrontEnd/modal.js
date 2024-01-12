@@ -1,18 +1,23 @@
-//Récupération de la modale
 const modal = document.getElementById("myModal");
-
-//Récup bouton pour l'ouvrir
 const btn = document.getElementById("modal-button");
-
-//Récup de l'icone pour la fermer
 const span = document.getElementsByClassName("close")[0];
 
-//Quand l'utilisateur clique sur le bouton, ouverture de la modale
+// Ouverture de la modale
 btn.onclick = function() {
   modal.style.display = "block";
 }
 
-//Fermture de la modale quand l'utilisateur clic sur la croix
+// Fermer la modale
 span.onclick = function() {
   modal.style.display = "none";
 }
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Evite l'ouverture automatique
+document.addEventListener("DOMContentLoaded", function() {
+  modal.style.display = "none";
+});

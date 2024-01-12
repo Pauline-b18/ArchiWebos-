@@ -45,11 +45,48 @@
 				<div class="edit-container">
 					<h2>Mes projets</h2>
 					<div class="edit-button">
-						<a href="#modal" class="modal-button"><i class="fa-regular fa-pen-to-square"></i>modifier</a>
+						<button class="modal-button" id="modal-button"><i class="fa-regular fa-pen-to-square"></i>modifier</button>
 						<div id="myModal" class="modal">
-							<!-- contenu de la modale-->
 							<div class="modal-content">
 								<span class="close"><i class="fa-solid fa-xmark"></i></span>
+								<!-- CONTENU MODALE  -->
+								<h3>Galerie photo</h3>
+								<div id="openmodal">
+									<!-- Récupérer dynamiquement gallery -->
+								</div>
+								<button class="ajout">Ajouter une photo</button>
+								<p class="supprimer">Supprimer la galerie</a>
+								<h3>Ajout photo</h3>
+								<label for="img-work" class="download"> <!-- Encadrement ajout de photo -->
+									<div class="img-form">
+										<div class="icon-img">
+											<i class="fa-regular fa-image"></i>
+										</div>
+										<div class="photo-works">
+											<label for="photo">+ Ajouter photo</label>
+											<input type="file" id="photo" name="photo" accept="image/*" required>
+										</div>
+										<div class="format">jpg. png 4mo max</div>
+										<input type="file" id="work-image" name="work-image" accept="image/*" required style="display: none;">
+									</div>
+								</label>
+								<form id="work-form"> <!-- Formulaire à remplir après ajout de la photo-->
+									<div class="titre-travaux">
+									 <label for="titre-work">Titre</label>
+									 <input type="text" id="titre-work" name="titre" required>
+									</div>
+					   
+									<div class="categorie-travaux">
+									 <label for="categorie-work">Catégorie</label>
+									  <select id="categorie-work" name="categorie-work" required>
+									  <option value="" disabled selected></option>
+									  </select>
+									</div>
+									<!-- bouton valider-->
+									<div class="line"></div> <!-- trait gris -->
+									<p class="error-post"></p>
+									<button id="submit" type="submit" class="validation">Valider</button>
+								  </form>
 							</div>
 						</div>	
 					</div>
