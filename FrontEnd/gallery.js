@@ -99,7 +99,7 @@ function displayWorksWithCategories(works, categoriesById) {
 }
 
 // Fonction pour afficher les travaux filtrés
-function displayFilteredWorks(filteredWorks, categoriesById) {
+ function displayFilteredWorks(filteredWorks, categoriesById) {
     const gallery = document.querySelector('.gallery');
 
     // Parcourir chaque travail filtré

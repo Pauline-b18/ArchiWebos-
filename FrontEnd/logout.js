@@ -1,5 +1,5 @@
 function deconnexion() {
-    window.localStorage.removeItem("token");
+    window.localStorage.clear();
     window.location.href = "./index.html";
   }
   
