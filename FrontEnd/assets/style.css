@@ -216,21 +216,50 @@ li:hover, li a:hover{
 	padding: 20px;
 	border: 1px solid #888;
 	width: 60%; 
-    max-width: 600px; /
+    max-width: 600px;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
   }
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+  
+.close:hover,
+.close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}  
 
 .modal-content h3 {
     text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 400;
+    margin: 30px auto 25px auto;
 }
-  .modal-content img {
+
+.modal-content img {
 	width: 90px;
 	height: auto;
 	margin: 10px 2px; 
-  }
-  
+}
+
+.modal-content .line {
+	border: solid 1px;
+	color: #B3B3B3;
+	width: 420px;
+
+}
+
 /* images modale */
 .modal-gallery {
     display: flex;
@@ -240,7 +269,6 @@ li:hover, li a:hover{
 	justify-content: center;
 }
 
-/* Ajoutez ces styles pour l'icône de la poubelle dans votre fichier CSS */
 .work-modal {
     position: relative;
 }
@@ -257,20 +285,6 @@ li:hover, li a:hover{
     cursor: pointer;
 }
 
-/* The Close Button */
-.close {
-	color: #aaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-}
-  
-.close:hover,
-.close:focus {
-	color: black;
-	text-decoration: none;
-	cursor: pointer;
-}
 
 .categories {
     display: flex;
