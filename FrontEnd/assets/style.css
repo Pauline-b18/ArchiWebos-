@@ -177,7 +177,7 @@ li:hover, li a:hover{
 	margin-top: 75px;
 }
 
-/* Modal button */
+/* PARTIE MODAL */
 
 .modal-button {
     text-decoration: none;
@@ -195,7 +195,7 @@ li:hover, li a:hover{
     margin-right: 10px;
     font-size: 18px;
 }
-/* The Modal (background) */
+
 .modal {
 	display: none; 
 	position: fixed; 
@@ -209,7 +209,6 @@ li:hover, li a:hover{
 	background-color: rgba(0,0,0,0.4); 
   }
   
-  /* Modal Content/Box */
   .modal-content {
 	background-color: #fefefe;
 	margin: 15% auto; 
@@ -219,18 +218,18 @@ li:hover, li a:hover{
     max-width: 600px;
 	border-radius: 10px;
 	display: flex;
+  	align-items: center;
 	flex-direction: column;
 	position: relative;
   }
 
 /* The Close Button */
 .close {
-    color: #aaa;
+    color: black;
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 28px;
-    font-weight: bold;
+    top: 20px;
+    right: 25px;
+	width: 13px;
 }
   
 .close:hover,
@@ -257,7 +256,20 @@ li:hover, li a:hover{
 	border: solid 1px;
 	color: #B3B3B3;
 	width: 420px;
+	margin: 30px auto 10px auto;
+}
 
+.modal-content form {
+	text-align: center;
+}
+
+.modal-content form input {
+	height: 36px;
+	width: 237px;
+	font-size: 14px;
+	font-weight: 700;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 /* images modale */
@@ -285,7 +297,118 @@ li:hover, li a:hover{
     cursor: pointer;
 }
 
+.custom-file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 420px;
+    margin: auto;
+}
+  
+.custom-file-upload .img-form {
+    background-color: #E8F1F6;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 30px;
+}
 
+.custom-file-upload .img-form * {
+    margin: 10px 0;
+}
+
+.custom-file-upload .img-form .icon-img {
+    color: #B9C5CC;
+    font-size: 60px;
+}
+
+.custom-file-upload .img-form input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload label::before {
+	color: #306685;
+	width: 173px;
+	border-radius: 50px;
+    content: "+ Ajouter photo";
+	font-weight: 500;
+    display: inline-block;
+    background-color: #CBD6DC;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* formulaire modal*/
+
+#work-form {
+	display: flex;
+	flex-direction: column;
+	margin-top: 20px;
+	width: 440px;
+}
+
+.titre-travaux {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 20px;
+}
+
+.titre-travaux label {
+	margin: -20px auto 10px auto;
+	width: 100%;
+	text-align: left;
+}
+
+.titre-travaux input[type="text"] {
+	width: 430px;
+	height: 51px;
+	padding: 5px;
+	font-size: 14px;
+	border-radius: 5px;
+	box-shadow: 0px 4px 14px 0px #00000017;
+}
+  
+.categorie-travaux {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+  
+
+.categorie-travaux label {
+	margin: 5px auto 10px auto;
+	width: 100%;
+	text-align: left;
+}
+  
+.categorie-travaux select {
+	width: 440px;
+	height: 51px;
+	padding: 5px;
+	font-size: 14px;
+	border-radius: 5px;
+	box-shadow: 0px 4px 14px 0px #00000017;
+	border: none;
+}
+
+#submit {
+	width: 237px;
+	background-color: #A7A7A7; 
+	color: white; 
+	padding: 10px 20px;
+	font-size: 14px;
+	border: none;
+	border-radius: 60px;
+	cursor: pointer;
+	display: block;
+ 	margin: 20px auto;
+	font-weight: 700;
+}
+  
+
+/* CATEGORIES */
 .categories {
     display: flex;
 }
