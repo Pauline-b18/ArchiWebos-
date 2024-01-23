@@ -137,7 +137,7 @@ nav .logout-button {
 }
 
 li:hover, li a:hover{
-	color: #B1663C;
+	color: #000000;
 	font-weight: bold;
 }
 
@@ -223,7 +223,16 @@ li:hover, li a:hover{
 	position: relative;
   }
 
-/* The Close Button */
+/* Return button */
+.return {
+	cursor: pointer;
+    position: absolute;
+    left: 25px;
+    top: 20px;
+	width: 13px;
+}
+
+/* Close button */
 .close {
     color: black;
     position: absolute;
