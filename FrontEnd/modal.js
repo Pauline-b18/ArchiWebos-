@@ -45,9 +45,9 @@ function getWorksDataForModal() {
 
         //utilisation de  Promise pour attendre que l'appel soit terminé
         worksForModalPromise.then(worksForModalData => {
-            //Stocker les données des works pour utilisation future
+            //Stock les données des works pour utilisation future
             worksDataForModal = worksForModalData;
-            //Afficher les works dans la modal
+            //Affiche les works dans la modal
             displayWorksInModal(worksForModalData);
         });
     } else {
@@ -74,7 +74,31 @@ document.addEventListener("DOMContentLoaded", function() { // évite l'ouverture
 
 // Fonction pour créer dynamiquement la section "Ajout photo" avec son formulaire
 function createDynamicPhotoSection() {
-  const modalContent = document.querySelector('.modal-content');
+  const modalContent2 = document.querySelector('.modal-content2');
+
+  // Création du bouton de fermeture
+  const closeButton = document.createElement('span');
+  closeButton.classList.add('close');
+
+  const closeIcon = document.createElement('i');
+  closeIcon.classList.add('fa-solid', 'fa-xmark');
+
+  closeButton.appendChild(closeIcon);
+
+  closeButton.addEventListener('click', closeModal);
+
+  // Création du bouton de retour
+  const returnButton = document.createElement('span');
+  returnButton.classList.add('return');
+  const returnIcon = document.createElement('i');
+  returnIcon.classList.add('fa-solid', 'fa-arrow-left');
+  returnButton.appendChild(returnIcon);
+
+  // Ajout de l'événement retour en arrière
+  returnButton.addEventListener('click', function() {
+  modalContent.style.display = 'block';
+  modalContent2.style.display = 'none';
+  });
 
   // Création de la section "Ajout photo"
   const ajoutPhotoHeading = document.createElement('h3');
@@ -168,23 +192,42 @@ function createDynamicPhotoSection() {
   workForm.appendChild(lineDiv);
   workForm.appendChild(submitButton);
 
-  // Ajouter les éléments à la modal
-  modalContent.appendChild(ajoutPhotoHeading);
-  modalContent.appendChild(customFileUploadDiv);
-  modalContent.appendChild(workForm);
+  // Ajoute les éléments à la modal-content2
+  modalContent2.appendChild(returnButton);
+  modalContent2.appendChild(ajoutPhotoHeading);
+  modalContent2.appendChild(customFileUploadDiv);
+  modalContent2.appendChild(workForm);
+  modalContent2.appendChild(closeButton);
 }
 
-
-// Modifier la fonction openModal pour organiser les éléments dans la modale
+// Fonction openModal pour organiser les éléments dans la modale
 function openModal() {
   modal.style.display = 'block';
 
+  // Efface le contenu existant de modal-content2
+  const modalContent2 = document.querySelector('.modal-content2');
+  modalContent2.innerHTML = '';
+
   // Appel des 2 fonctions
   getWorksDataForModal();
-
+  createDynamicPhotoSection(); // section "Ajout photo"
 }
 
 // Fonction pour fermer la modal
 function closeModal() {
   modal.style.display = "none";
 }
+
+const formLogin = document.querySelector('.form-login');
+const modalContent = document.querySelector('.modal-content');
+const modalContent2 = document.querySelector('.modal-content2');
+
+// Événement au clic sur "Ajouter une photo"
+formLogin.addEventListener('submit', function (event) {
+    // Empêche le comportement par défaut du formulaire pour éviter le rechargement de la page
+    event.preventDefault();
+
+    // Modifie les propriétés CSS des divs
+    modalContent.style.display = 'none';
+    modalContent2.style.display = 'block';
+});

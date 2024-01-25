@@ -1,19 +1,17 @@
 // Fonction pour récupérer les données de l'API
-async function fetchData(apiEndpoint) {
-    try {
-        const response = await fetch(apiEndpoint);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
-    }
+function fetchData(apiEndpoint) {
+    return fetch(apiEndpoint)
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Erreur lors de la récupération des données:', error);
+        });
 }
 
 // Récupération des 2 API (works/catégories)
 const worksPromise = fetchData("http://localhost:5678/api/works");
 const categoriesPromise = fetchData("http://localhost:5678/api/categories");
 
-// Promise.all permet d'attendre que les 2 appels soient terminés
+// Utilisation de Promise.all pour attendre que les 2 appels soient terminés
 Promise.all([worksPromise, categoriesPromise])
     .then(([worksData, categoriesData]) => {
         const categoriesById = categoriesData.reduce((acc, category) => {
@@ -25,6 +23,7 @@ Promise.all([worksPromise, categoriesPromise])
     .catch(error => {
         console.error('Une erreur s\'est produite:', error);
     });
+
 
 // Fonction pour afficher les travaux filtrés
 const displayFilteredWorks = (filteredWorks, categoriesById) => {
