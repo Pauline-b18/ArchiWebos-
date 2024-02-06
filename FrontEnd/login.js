@@ -4,8 +4,8 @@ function ajoutListenerLogin() {
         event.preventDefault(); // empêcher le comportement par défaut
 
         const login = {
-            email: event.target.querySelector("[name=email]").value,
-            password: event.target.querySelector("[name=password]").value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
         };
         // Création de la charge utile au format JSON
         const chargeUtile = JSON.stringify(login);

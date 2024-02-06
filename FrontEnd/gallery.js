@@ -24,7 +24,6 @@ Promise.all([worksPromise, categoriesPromise])
         console.error('Une erreur s\'est produite:', error);
     });
 
-
 // Fonction pour afficher les travaux filtrés
 const displayFilteredWorks = (filteredWorks, categoriesById) => {
     const gallery = document.querySelector('.gallery');
@@ -47,13 +46,26 @@ const createWorkElement = (work, categoriesById) => {
     imageElement.src = work.imageUrl;
     imageElement.alt = work.title;
 
+    // Ajoutez un attribut data-id avec la valeur de l'ID du travail
+    workContainer.dataset.id = work.id;
+
     const categoryElement = document.createElement('p');
     const category = categoriesById[work.categoryId];
     categoryElement.textContent = `Category: ${category ? category.name : 'Unknown'}`;
 
+    const deleteIcon = document.createElement('i');
+    deleteIcon.classList.add('fa-solid', 'fa-trash-can', 'delete-icon');
+
+    // Ajoutez un event listener pour supprimer le travail
+    deleteIcon.addEventListener('click', function() {
+        const workId = workContainer.dataset.id;
+        deleteWork(workId);
+    });
+
     workContainer.appendChild(titleElement);
     workContainer.appendChild(imageElement);
     workContainer.appendChild(categoryElement);
+    workContainer.appendChild(deleteIcon);
 
     return workContainer;
 };
@@ -62,7 +74,7 @@ const createWorkElement = (work, categoriesById) => {
 const displayWorksWithCategories = (works, categoriesById) => {
     const gallery = document.querySelector('.gallery');
     const categoriesContainer = document.querySelector('.categories');
-    const categoriesList = document.createElement('ul'); 
+    const categoriesList = document.createElement('ul');
 
     gallery.innerHTML = '';
     categoriesContainer.innerHTML = '';
