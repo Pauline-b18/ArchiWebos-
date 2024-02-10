@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sophie Bluel - Architecte d'intérieur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="./assets/form.css">
+</head>
+<header>
+</header>
+<body>
+    <main id="form-content">
+        <h2 class="modal-title">Ajout photo</h2>
+        <div>
+            <a href="#" id="returnButton"><i class="fas fa-arrow-left"></i></a>
+
+            <span class="close" id="close"><i class="fa-solid fa-xmark"></i></span>
+            <form id="uploadForm" method="post" enctype="multipart/form-data">
+                <label for="image" class="add-photo-container" id="photoLabel">
+                    <i id="photo-icon" class="fas fa-image"></i>
+                    <input type="file" id="image" name="image" accept="image/*" style="display: none;" required>
+                    <span class="custom-file-button">+ Ajouter photo</span>
+                    <p class="files-type">jpg, png : 4mo max</p>
+                </label>
+                
+                <span id="fileName"></span>
+                <img id="photo-preview" alt="Photo Preview" style="display:none; max-width: 100%;">
+            
+                <label for="title"><span class="title-img">Titre</span></label>
+                <input type="text" id="title" name="title" required>
+            
+                <label for="category"><span class="category-img">Catégorie</span></label>
+                <select id="category" name="category"></select>
+            
+                <div class="gray-border"></div>
+            
+                <button id="submit-button" class="submit-button" type="submit">Valider</button>
+            </form>
+        </div>
+    </main>
+<script src="index.js"></script>
+<script src="form.js"></script> 
+<script src="https://kit.fontawesome.com/926fed3d7c.js" crossorigin="anonymous"></script>    
+</body>
+</html>

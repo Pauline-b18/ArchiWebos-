@@ -1,0 +1,466 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/** end reset css**/
+
+.black-bar {
+	border: solid 1px;
+	height: 60px;
+	display: flex;
+	background-color: black;
+	display: none; 
+}
+
+.black-bar a {
+	height: 100%;
+	text-decoration: none;
+	color: rgb(255, 255, 255);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: "Work Sans";
+	font-weight: 400;
+	cursor: auto;
+}
+
+.black-bar p {
+	margin: 0;
+}
+
+.black-bar i, .black-bar p {
+	color: rgb(255, 255, 255);
+}
+
+.black-bar i {
+	margin-right: 10px;
+}
+
+.main-container {
+	max-width: 1140px;
+	margin:auto;
+	font-family: 'Work Sans' ;
+	font-size: 14px;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	margin: 50px 0
+}
+
+header a {
+	text-decoration: none;
+	color: black;
+}
+section {
+	margin: 50px 0
+}
+
+h1{
+	display: flex;
+	flex-direction: column;
+	font-family: 'Syne';
+	font-size: 22px;
+	font-weight: 800;
+	color: #B1663C
+}
+
+h1 > span {
+	font-family: 'Work Sans';
+	font-size:10px;
+	letter-spacing: 0.1em;
+;
+}
+
+h2{
+	font-family: 'Syne';
+	font-weight: 700;
+	font-size: 30px;
+	color: #1D6154
+}
+nav ul {
+	display: flex;
+	align-items: center;
+	list-style-type: none;
+
+}
+nav li {
+	padding: 0 10px;
+	font-size: 1.2em;
+}
+
+nav .logout-button {
+	display: none;
+}
+
+li a:hover{
+	color: #000000;
+	font-weight: bold;
+}
+
+#introduction {
+	display: flex;
+	align-items: center;
+}
+#introduction figure {
+	flex: 1
+}
+#introduction img {
+	display: block;
+	margin: auto;
+	width: 80%;
+}
+
+#introduction article {
+	flex: 1
+}
+#introduction h2 {
+	margin-bottom: 1em;
+}
+
+#introduction p {
+	margin-bottom: 0.5em;
+}
+
+#introduction .edit-button {
+    position: relative;
+    left: 45px;
+    text-align: left;
+    color: black;
+    border: none;
+    font-size: 14px;
+    background-color: transparent;
+    margin: 10px;
+    padding: 0;
+}
+
+#portfolio {
+    padding-top: 50px; 
+}
+
+#portfolio h2 {
+	text-align: center;
+	margin-bottom: 70px;
+}
+
+#portfolio .edit-button {
+    position: relative;
+    left: 675px;
+    text-align: left;
+    color: black;
+    border: none;
+    font-size: 14px;
+    background-color: transparent;
+    top: 30px;
+    cursor: pointer;
+}
+
+#portfolio .edit-button i {
+    margin: 0 5px 3px 15px;
+}
+
+.gallery {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-column-gap: 20px;
+	grid-row-gap: 20px;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    border-radius: 60px;
+    padding: 10px;
+	margin-bottom: 30px;
+}
+
+.filters button {
+    background-color: transparent;
+    border: 1px solid #1D6154;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1D6154;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 5px 15px;
+    border-radius: 20px;
+    margin: 0 5px;
+}
+
+.filters button:last-child {
+    margin-right: 0;
+}
+
+.filters button:hover {
+    background-color: #1D6154;
+    color: #F2F2F2;
+}
+
+.gallery img {
+	width: 100%;
+}
+
+/************************* PARTIE MODAL *********************************/
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 999; 
+    display: none; 
+}
+
+.modal {
+    display: none;
+}
+
+.modal-content {
+    position: fixed;
+    width: 630px;
+    height: 731px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 10px;
+    z-index: 1000;
+  }
+
+.modal-title {
+    display: flex;
+    color: black;
+    font-size: 26px;
+    font-weight: 400;
+    font-family: 'Work Sans';
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 50px;
+    margin-left: 230px;
+    padding: 0;
+    justify-content: center;
+    align-items: flex-start; 
+}
+
+  
+.modal-image {
+    width: 80px; 
+    height: 110px; 
+}
+
+
+.icon-button {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+    background-color: black;
+    border: none;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    margin-top: -107px;
+    margin-left: 50px;
+    padding: 0;
+}
+
+
+.icon-button i {
+    align-items: center;
+    justify-content: center;
+    color: rgb(255, 255, 255);
+}
+
+
+.button-add-img {
+    font-family: 'Syne';
+	font-weight: 700;
+    font-size: 14px;
+	color: white;
+	background-color: #1D6154;
+	width: 237px;
+    height: 36px;
+	text-align: center;
+	border-radius: 60px ;
+    position: absolute;
+    margin-top: 510px;
+    margin-left: 195px;
+    border: none;
+}
+
+.gray-border {
+    border-top: 1px solid #B3B3B3;
+    margin: 30px auto;
+    width: 420px;
+}
+
+.image-block-container {
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    margin: 0 70px;
+}
+
+.image-container {
+    width: 77px;
+    margin: 0 10px 30px 10px;
+}
+
+.close i {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 30px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.modal-title2 {
+    display: flex;
+    color: black;
+    font-size: 23px;
+    font-family: 'Work Sans';
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 50px;
+    padding: 0;
+    justify-content: center;
+    align-items: flex-start; 
+}
+
+.close2 {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#returnButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+}
+
+#returnButton i {
+    font-size: 24px;
+}
+
+#returnButton:visited {
+    color: inherit;
+}
+
+/** FIN PARTIE MODALE **/
+
+#contact {
+	width: 50%;
+	margin: auto;
+}
+#contact > * {
+	text-align: center;
+
+}
+#contact h2{
+	margin-bottom: 20px;
+}
+#contact form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+#contact input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+#contact label {
+	margin: 2em 0 1em 0;
+}
+#contact textarea {
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.form-login a {
+	display: block;
+	color: #3D3D3D;
+	font-weight: bold;
+    text-align: center;
+	margin-bottom: 300px;
+}
+
+input[type="submit"]{
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	margin : 2em auto ;
+	width: 180px;
+	text-align: center;
+	border-radius: 60px ;
+	transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+	background-color: #0E2F28 ;
+}
+
+footer nav ul {
+	display: flex;
+	justify-content: flex-end;
+	margin: 2em
+}
+
