@@ -337,6 +337,11 @@ li a:hover{
     border: none;
 }
 
+.button-add-img:hover {
+    background-color: #0E2F28;
+    transition: background-color 0.3s ease;
+}
+
 .gray-border {
     border-top: 1px solid #B3B3B3;
     margin: 30px auto;
@@ -399,6 +404,8 @@ li a:hover{
 #returnButton:visited {
     color: inherit;
 }
+
+
 
 /** FIN PARTIE MODALE **/
 

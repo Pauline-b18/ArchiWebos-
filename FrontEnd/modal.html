@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/926fed3d7c.js" crossorigin="anonymous"></script>  
     <meta name="description" content="">
     <link rel="stylesheet" href="./assets/form.css">
 </head>
@@ -24,11 +25,9 @@
                 <label for="image" class="add-photo-container" id="photoLabel">
                     <i id="photo-icon" class="fas fa-image"></i>
                     <input type="file" id="image" name="image" accept="image/*" style="display: none;" required>
-                    <span class="custom-file-button">+ Ajouter photo</span>
+                    <span class="choose-photo-button">+ Ajouter photo</span>
                     <p class="files-type">jpg, png : 4mo max</p>
                 </label>
-                
-                <span id="fileName"></span>
                 <img id="photo-preview" alt="Photo Preview" style="display:none; max-width: 100%;">
             
                 <label for="title"><span class="title-img">Titre</span></label>
@@ -44,7 +43,6 @@
         </div>
     </main>
 <script src="index.js"></script>
-<script src="form.js"></script> 
-<script src="https://kit.fontawesome.com/926fed3d7c.js" crossorigin="anonymous"></script>    
+<script src="form.js"></script>   
 </body>
 </html>

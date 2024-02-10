@@ -122,6 +122,10 @@
     line-height: 30px;
 }
 
+.submit-button:hover {
+    background-color: #0E2F28;
+    transition: background-color 0.3s ease;
+}
 
 .gray-border {
     border-top: 1px solid #B3B3B3;
@@ -133,7 +137,7 @@
     position: absolute;
 }
 
-.custom-file-button {
+.choose-photo-button {
     font-family: 'Work Sans', sans-serif;
     font-size: 14px;
     background-color: #CBD6DC;
@@ -149,7 +153,7 @@
     right: 135px;
 }
 
-.custom-file-button:hover {
+.choose-photo-button:hover {
     background-color: #b0c2ca;
 }
 
