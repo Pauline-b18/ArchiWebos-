@@ -83,23 +83,41 @@ document.addEventListener('DOMContentLoaded', function () {
             const editButtonPortfolio = document.createElement('button');
             editButtonPortfolio.className = 'edit-button';
             editButtonPortfolio.id = 'portfolio-edit-button';
-            editButtonPortfolio.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> modifier`;
-            return editButtonPortfolio;
+            const icon = document.createElement('i');
+            icon.className = 'fa-regular fa-pen-to-square';
+            editButtonPortfolio.appendChild(icon);
+            editButtonPortfolio.appendChild(document.createTextNode(' modifier'));
+
+    return editButtonPortfolio;
         }
 
         const portfolioSection = document.getElementById('portfolio');
         const portfolioEditButton = createEditButtonPortfolio(); // a modif
         portfolioSection.insertBefore(portfolioEditButton, portfolioSection.firstElementChild);
 
-        //Création de la modal
+        // Création de la modal
         const modal = document.createElement('div');
         modal.id = 'myModal';
         modal.className = 'modal';
 
         const modalContent = document.createElement('div');
-        modalContent.id ='modalContent'
+        modalContent.id ='modalContent';
         modalContent.className = 'modal-content';
-        modalContent.innerHTML = `<span class="close" id="close"><i class="fa-solid fa-xmark"></i></span><h1 class="modal-title">Galerie photo</h1>`;
+
+        const closeSpan = document.createElement('span');
+        closeSpan.className = 'close';
+        closeSpan.id = 'close';
+        const closeIcon = document.createElement('i');
+        closeIcon.className = 'fa-solid fa-xmark';
+        closeSpan.appendChild(closeIcon);
+        modalContent.appendChild(closeSpan);
+
+        const modalTitle = document.createElement('h1');
+        modalTitle.className = 'modal-title';
+        modalTitle.textContent = 'Galerie photo';
+        modalContent.appendChild(modalTitle);
+
+        modal.appendChild(modalContent);
 
         //Bouton ajouter une image
         const buttonAddImg = document.createElement('button');
@@ -202,7 +220,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         //Suppression des travaux
                         const deleteButton = document.createElement('button');
                         deleteButton.classList.add('icon-button');
-                        deleteButton.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+                        const deleteIcon = document.createElement('i');
+                        deleteIcon.className = 'fa-solid fa-trash-can';
+                        deleteButton.appendChild(deleteIcon);
                         deleteButton.addEventListener('click', () => {
                             const confirmDelete = confirm('Souhaitez-vous supprimer cette image ?');
                             if (confirmDelete) {
@@ -245,9 +265,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function resetModalPage() { 
             const modalContent = document.querySelector('.modal-content');
-            modalContent.innerHTML = `<span class="close" id="close"><i class="fa-solid fa-xmark"></i></span><h1 class="modal-title">Galerie photo</h1><button class="button-add-img" id="buttonAddImg">Ajouter une image</button>`;
-
-            const buttonAddImg = document.getElementById('buttonAddImg');
+        
+            const closeSpan = document.createElement('span');
+            closeSpan.className = 'close';
+            closeSpan.id = 'close';
+            const closeIcon = document.createElement('i');
+            closeIcon.className = 'fa-solid fa-xmark';
+            closeSpan.appendChild(closeIcon);
+            modalContent.appendChild(closeSpan);
+        
+            const modalTitle = document.createElement('h1');
+            modalTitle.className = 'modal-title';
+            modalTitle.textContent = 'Galerie photo';
+            modalContent.appendChild(modalTitle);
+        
+            const buttonAddImg = document.createElement('button');
+            buttonAddImg.className = 'button-add-img';
+            buttonAddImg.id = 'buttonAddImg';
+            buttonAddImg.textContent = 'Ajouter une image';
+            modalContent.appendChild(buttonAddImg);
+        
             buttonAddImg.addEventListener('click', () => {
                 const iframe = document.createElement('iframe');
                 iframe.src = 'modal.html';
@@ -262,6 +299,3 @@ document.addEventListener('DOMContentLoaded', function () {
         barAdmin.style.display = "none";
     }
 });
-
-
-
