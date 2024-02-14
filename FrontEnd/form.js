@@ -1,3 +1,5 @@
+import { fetchAndDisplayWorks } from './index.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     const uploadForm = document.getElementById("uploadForm");
     const categorySelect = document.getElementById("category");
@@ -111,11 +113,11 @@ document.addEventListener('DOMContentLoaded', function () {
         window.parent.location.href = 'index.html';
     });
 
-    // Retour en arrière
     returnButton.addEventListener("click", () => {
-        // Redirection vers la page précédente
-    window.location.href = 'index.html';
+        fetchAndDisplayWorks ();
+    // Redirection vers la page précédente
+  //  window.location.href = 'index.html';
     // Après la redirection, déplacez le curseur vers l'élément #portfolio-edit-button
-    window.location.hash = '#portfolio-edit-button';
-    });
+    //window.location.hash = '#portfolio-edit-button';
+});
 });

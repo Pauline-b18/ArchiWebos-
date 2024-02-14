@@ -1,47 +1,38 @@
-// Attend que le DOM soit complètement chargé pour exécuter le code
-document.addEventListener('DOMContentLoaded', function() {
-    const gallery = document.getElementById('gallery'); //Endroit où les images seront affichées
-    const filtersContainer = document.getElementById('filters'); // Conteneur filtres
+export { fetchAndDisplayWorks };
+// Définition des catégories de filtres avec l'ID et noms
+const categories = [
+    { id: -1, name: 'Tous' },
+    { id: 1, name: 'Objets' },
+    { id: 2, name: 'Appartements' },
+    { id: 3, name: 'Hôtels & restaurants' }
+];
 
-    // Définit les catégories de filtres avec l'ID et noms
-    const categories = [
-        { id: -1, name: 'Tous' },
-        { id: 1, name: 'Objets' },
-        { id: 2, name: 'Appartements' },
-        { id: 3, name: 'Hôtels & restaurants' }
-    ];
+// Fonction pour filtrer et afficher les images en fonction de la catégorie
+function filterAndDisplayImages(categoryId, data) {
+    const gallery = document.getElementById('gallery'); // Endroit où les images seront affichées
+    gallery.innerHTML = '';
 
-    // Création des boutons filtres en utilisant les catégories
-    categories.forEach(category => {
-        const button = document.createElement('button');
-        button.textContent = category.name; // Texte du bouton en fonction du nom de la catégorie
-        button.setAttribute('data-category', category.id); // Attribut pour stocker l'ID de catégorie
-        filtersContainer.appendChild(button);
+    // Filtre en fonction de la catégorie sélectionnée avec l'utilisation de la méthode filter()
+    const filteredImages = data.filter(image => categoryId === -1 || image.categoryId === categoryId); // s'affiche si -1 (tous) et si correspond à la catégorie sélectionnée
+
+    // Parcours les images filtrées et les affiche
+    filteredImages.forEach(image => {
+        const figure = document.createElement('figure');
+        const img = document.createElement('img');
+        const figcaption = document.createElement('figcaption');
+
+        img.src = image.imageUrl; // URL de la source de l'image
+        img.alt = image.title; // Texte alternatif de l'image
+        figcaption.textContent = image.title; // Texte en légende (titre)
+
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+        gallery.appendChild(figure);
     });
+}
 
-    // Fonction pour filtrer et afficher les images en fonction de la catégorie
-    function filterAndDisplayImages(categoryId, data) {
-        gallery.innerHTML = '';
-
-        // Filtre en fonction de la catégorie sélectionnée avec l'utilisation de la méthode filter()
-        const filteredImages = data.filter(image => categoryId === -1 || image.categoryId === categoryId); //s'affiche si -1 (tous) et si correspond à la catégorie sélectionnée
-
-        // Parcours les images filtrées et les affiche
-        filteredImages.forEach(image => {
-            const figure = document.createElement('figure'); 
-            const img = document.createElement('img'); 
-            const figcaption = document.createElement('figcaption'); 
-
-            img.src = image.imageUrl; // URL de la source de l'image
-            img.alt = image.title; // Texte alternatif de l'image
-            figcaption.textContent = image.title; // Texte en légendre (titre)
-
-            figure.appendChild(img); 
-            figure.appendChild(figcaption); 
-            gallery.appendChild(figure);
-        });
-    }
-
+// Fonction qui gère la récupération des travaux et leur affichage
+function fetchAndDisplayWorks() {
     // Appel à l'API pour récupérer les données des travaux de la galerie
     fetch('http://localhost:5678/api/works', {
         method: 'GET'
@@ -50,12 +41,21 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         filterAndDisplayImages(-1, data); // Affiche toutes les images par défaut
 
+        const filtersContainer = document.getElementById('filters'); // Conteneur filtres
         const filterButtons = filtersContainer.querySelectorAll('button'); // Sélectionne tous les boutons de filtres
-        
-        // Ajoute d'un Eventlistener pour chaque bouton de filtre
+
+        // Création des boutons filtres en utilisant les catégories
+        categories.forEach(category => {
+            const button = document.createElement('button');
+            button.textContent = category.name; // Texte du bouton en fonction du nom de la catégorie
+            button.setAttribute('data-category', category.id); // Attribut pour stocker l'ID de catégorie
+            filtersContainer.appendChild(button);
+        });
+
+        // Ajoute un Eventlistener pour chaque bouton de filtre
         filterButtons.forEach(button => {
             button.addEventListener('click', function(event) {
-                event.preventDefault(); // Empeche le rechargement par défaut
+                event.preventDefault(); // Empêche le rechargement par défaut
                 // Récupère l'ID de la catégorie à partir de l'attribut 'data-category' du bouton
                 const categoryId = parseInt(button.getAttribute('data-category'));
                 filterAndDisplayImages(categoryId, data); // Filtre et affiche les images
@@ -65,7 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(error => {
         console.error('Une erreur s\'est produite:', error);
     });
-});
+}
+
+// Attend que le DOM soit complètement chargé pour exécuter la fonction "fetchAndDisplayWorks"
+document.addEventListener('DOMContentLoaded', fetchAndDisplayWorks);
 
 /////////////////////////////////// PARTIE ADMINISTRATEUR ET MODAL ////////////////////////////////////
 
@@ -299,3 +302,4 @@ document.addEventListener('DOMContentLoaded', function () {
         barAdmin.style.display = "none";
     }
 });
+
