@@ -44,6 +44,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .add-photo-container i {
@@ -108,7 +109,6 @@
 	font-weight: 700;
     font-size: 14px;
 	color: white;
-	background-color: #1D6154;
 	width: 237px;
     height: 36px;
 	text-align: center;
@@ -120,11 +120,6 @@
     border: none;
     padding: 0;
     line-height: 30px;
-}
-
-.submit-button:hover {
-    background-color: #0E2F28;
-    transition: background-color 0.3s ease;
 }
 
 .gray-border {

@@ -1,4 +1,4 @@
-import { fetchAndDisplayWorks } from './index.js';
+import { fetchAndDisplayWorks, refreshModalContent } from './index.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     const uploadForm = document.getElementById("uploadForm");
@@ -12,6 +12,45 @@ document.addEventListener('DOMContentLoaded', function () {
     const returnButton = document.getElementById("returnButton");
     const closeButton = document.getElementById("close");
     const formContent = document.getElementById("form-content");
+    const submitButton = document.querySelector('.submit-button'); // Sélectionnez le bouton de soumission
+
+    // Fonction pour vérifier si tous les champs du formulaire sont remplis
+    function checkFormValidity() {
+        const inputs = uploadForm.querySelectorAll('input, select');
+        for (let input of inputs) {
+            if (!input.value) {
+                return false; // Si un champ est vide, retourne false
+            }
+        }
+        return true; // Si tous les champs sont remplis, retourne true
+    }
+
+    // Fonction pour activer ou désactiver le bouton de soumission en fonction de l'état des champs du formulaire
+    function toggleSubmitButton() {
+        if (checkFormValidity()) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('disabled');
+            submitButton.style.backgroundColor = '#1D6154'; // Changez la couleur en vert
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.add('disabled');
+            submitButton.style.backgroundColor = '#B3B3B3'; // Changez la couleur en gris
+        }
+    }
+
+    // Écouteurs d'événements pour les champs du formulaire
+    uploadForm.addEventListener('input', toggleSubmitButton);
+
+    // Écouteur d'événement pour la soumission du formulaire
+    uploadForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Empeche le rechargement par défaut de la page
+        // Vérifie si tous les champs sont remplis avant de soumettre le formulaire
+        if (checkFormValidity()) {
+            const formData = new FormData(uploadForm); // Crée un objet FormData contenant les données du formulaire
+            // Appelle la fonction pour télécharger l'image
+            uploadImage(formData);
+        }
+    });
 
     //Fonction pour envoyer une image vers le serveur
     function uploadImage(formData) {
@@ -80,33 +119,31 @@ document.addEventListener('DOMContentLoaded', function () {
     loadCategories();
 
     photoInput.addEventListener('change', (event) => {
-        //Récupère la photo sélectionnée dans les fichiers
         const selectedPhoto = event.target.files[0];
-        //Vérifie si une photo a été sélectionnée
-        if (selectedPhoto) {
-            const photoUrl = URL.createObjectURL(selectedPhoto); //Crée une URL objet pour la photo 
-            photoPreview.src = photoUrl; //Affiche son apercu en lui assignant l'URL créée
-            photoPreview.style.display = 'block';
-            photoIcon.style.display = 'none'; //Masque le reste du contenu
-            choosePhotoButton.style.display = 'none';
-            photoLabel.style.backgroundColor = '#E8F1F6';
-        } else {
-            // Si aucune photo n'est sélectionnée, réinitialise les éléments d'aperçu et les styles
-            photoPreview.src = '';
-            photoPreview.style.display = 'none';
-            photoIcon.style.display = 'block';
-            choosePhotoButton.style.display = 'block';
-            photoLabel.style.backgroundColor = '';
+
+        // Vérification de la taille de l'image
+        const maxSize = 4 * 1024 * 1024; // 4 Mo
+        if (selectedPhoto.size > maxSize) {
+            alert("La photo est trop volumineuse. Veuillez sélectionner une photo de moins de 4 Mo.");
+            photoInput.value = '';
+            return;
         }
-    });
-
-
-    uploadForm.addEventListener('submit', function (event) {
-        event.preventDefault(); //Empeche rechargement par défaut de la page
-
-        const formData = new FormData(uploadForm); //Crée un objet FormData contenant les données du formulaire
-        // Appelle la fonction pour télécharger l'image
-        uploadImage(formData);
+    
+        // Vérification du format de l'image
+        const validFormats = ['image/jpeg', 'image/png'];
+        if (!validFormats.includes(selectedPhoto.type)) {
+            alert("Le format de la photo n'est pas supporté. Veuillez sélectionner une photo au format JPEG ou PNG.");
+            photoInput.value = '';
+            return;
+        }
+    
+        // Si l'image valide toutes les conditions, affiche l'aperçu de l'image
+        const photoUrl = URL.createObjectURL(selectedPhoto);
+        photoPreview.src = photoUrl;
+        photoPreview.style.display = 'block';
+        photoIcon.style.display = 'none';
+        choosePhotoButton.style.display = 'none';
+        photoLabel.style.backgroundColor = '#E8F1F6';
     });
 
     closeButton.addEventListener("click", () => {
@@ -114,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     returnButton.addEventListener("click", () => {
-        fetchAndDisplayWorks ();
+        window.history.back();
     // Redirection vers la page précédente
   //  window.location.href = 'index.html';
     // Après la redirection, déplacez le curseur vers l'élément #portfolio-edit-button

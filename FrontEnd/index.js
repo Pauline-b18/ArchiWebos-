@@ -1,4 +1,5 @@
-export { fetchAndDisplayWorks };
+export { fetchAndDisplayWorks, refreshModalContent };
+
 // Définition des catégories de filtres avec l'ID et noms
 const categories = [
     { id: -1, name: 'Tous' },
@@ -71,6 +72,72 @@ function fetchAndDisplayWorks() {
 document.addEventListener('DOMContentLoaded', fetchAndDisplayWorks);
 
 /////////////////////////////////// PARTIE ADMINISTRATEUR ET MODAL ////////////////////////////////////
+
+// Définition de la fonction refreshModalContent en dehors de la portée de l'événement DOMContentLoaded
+function refreshModalContent() {
+    fetch('http://localhost:5678/api/works', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        const modalContent = document.querySelector('.modal-content');
+        const imageBlockContainer = document.createElement('div');
+        imageBlockContainer.classList.add('image-block-container');
+
+        data.forEach(imageData => {
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+
+            const imageElement = document.createElement('img');
+            imageElement.src = imageData.imageUrl;
+            imageElement.classList.add('modal-image');
+            imageContainer.appendChild(imageElement);
+            
+            //Suppression des travaux
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('icon-button');
+            const deleteIcon = document.createElement('i');
+            deleteIcon.className = 'fa-solid fa-trash-can';
+            deleteButton.appendChild(deleteIcon);
+            deleteButton.addEventListener('click', () => {
+                const confirmDelete = confirm('Souhaitez-vous supprimer cette image ?');
+                if (confirmDelete) {
+                    const token = localStorage.getItem('token');
+                    if (!token) { //Vérifie si le token est présent
+                        console.error('Token d\'authentification manquant.');
+                        return;
+                    }
+                    
+                    const headers = new Headers();
+                    headers.append('Authorization', `Bearer ${token}`); //Ajoute le token d'authentification au headers de la requête
+
+                    fetch(`http://localhost:5678/api/works/${imageData.id}`, {
+                        method: 'DELETE',
+                        headers: headers,
+                    })
+                    .then(() => {
+                        modalContent.removeChild(imageContainer);
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la suppression de l\'image :', error);
+                    });
+                }
+            });
+
+            imageContainer.appendChild(deleteButton);
+            imageBlockContainer.appendChild(imageContainer);
+        });
+
+        modalContent.appendChild(imageBlockContainer);
+
+        const grayBorder = document.createElement('div');
+        grayBorder.classList.add('gray-border');
+        modalContent.appendChild(grayBorder);
+    })
+    .catch(error => {
+        console.error('Erreur lors de la récupération des données de la galerie :', error);
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     const storedToken = localStorage.getItem('token');
@@ -146,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(categories => {
                     const categorySelect = document.getElementById('category');
-
                     categories.forEach(category => {
                         const option = document.createElement('option'); //Création du menu déroulant
                         option.value = category.id;
@@ -163,18 +229,22 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.appendChild(modalContent);
         document.body.appendChild(modal); //modal placé dans le body, sous le main-container
 
+        // Partie qui gère l'ouverture de la modal
         const openModalButton = document.getElementById('portfolio-edit-button');
         const closeModal = document.getElementById('close');
-        const overlay = document.createElement('div'); //fond gris derrière la modal
+        const overlay = document.createElement('div'); // fond gris derrière la modal
         overlay.id = 'overlay';
         overlay.className = 'overlay';
-        document.body.appendChild(overlay); //overlay placé dans le body, sous la modal
+        document.body.appendChild(overlay); // overlay placé dans le body, sous la modal
 
-        openModalButton.addEventListener('click', () => {
+        function openModal() {
             modal.style.display = 'block';
             overlay.style.display = 'block';
-            refreshModalContent(); //Appel de la fonction pour refresh le contenu de la modal
-        });
+            refreshModalContent(); // Appel de la fonction pour rafraîchir le contenu de la modal
+            // Utilisation de history.pushState pour modifier l'URL sans recharger la page
+            history.pushState({ modalOpen: true }, null, window.location.href + '#modal'); //test
+        }
+        openModalButton.addEventListener('click', openModal); // Appel de la fonction openModal lors du clic sur le bouton
 
         closeModal.addEventListener('click', () => {
             modal.style.display = 'none';
@@ -200,72 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.reload();
             }
         });
-
-        function refreshModalContent() {
-            fetch('http://localhost:5678/api/works', {
-                method: 'GET'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const modalContent = document.querySelector('.modal-content');
-                    const imageBlockContainer = document.createElement('div');
-                    imageBlockContainer.classList.add('image-block-container');
-        
-                    data.forEach(imageData => {
-                        const imageContainer = document.createElement('div');
-                        imageContainer.classList.add('image-container');
-        
-                        const imageElement = document.createElement('img');
-                        imageElement.src = imageData.imageUrl;
-                        imageElement.classList.add('modal-image');
-                        imageContainer.appendChild(imageElement);
-                        
-                        //Suppression des travaux
-                        const deleteButton = document.createElement('button');
-                        deleteButton.classList.add('icon-button');
-                        const deleteIcon = document.createElement('i');
-                        deleteIcon.className = 'fa-solid fa-trash-can';
-                        deleteButton.appendChild(deleteIcon);
-                        deleteButton.addEventListener('click', () => {
-                            const confirmDelete = confirm('Souhaitez-vous supprimer cette image ?');
-                            if (confirmDelete) {
-                                const token = localStorage.getItem('token');
-                                if (!token) { //Vérifie si le token est présent
-                                    console.error('Token d\'authentification manquant.');
-                                    return;
-                                }
-                                
-                                const headers = new Headers();
-                                headers.append('Authorization', `Bearer ${token}`); //Ajoute le token d'authentification au headers de la requête
-        
-                                fetch(`http://localhost:5678/api/works/${imageData.id}`, {
-                                    method: 'DELETE',
-                                    headers: headers,
-                                })
-                                    .then(() => {
-                                        modalContent.removeChild(imageContainer);
-                                    })
-                                    .catch(error => {
-                                        console.error('Erreur lors de la suppression de l\'image :', error);
-                                    });
-                            }
-                        });
-        
-                        imageContainer.appendChild(deleteButton);
-                        imageBlockContainer.appendChild(imageContainer);
-                    });
-        
-                    modalContent.appendChild(imageBlockContainer);
-        
-                    const grayBorder = document.createElement('div');
-                    grayBorder.classList.add('gray-border');
-                    modalContent.appendChild(grayBorder);
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la récupération des données de la galerie :', error);
-                });
-        }
-
+//
+//
         function resetModalPage() { 
             const modalContent = document.querySelector('.modal-content');
         
