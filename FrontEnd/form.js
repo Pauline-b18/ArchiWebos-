@@ -1,5 +1,3 @@
-import { fetchAndDisplayWorks, refreshModalContent } from './index.js';
-
 document.addEventListener('DOMContentLoaded', function () {
     const uploadForm = document.getElementById("uploadForm");
     const categorySelect = document.getElementById("category");
@@ -25,21 +23,15 @@ document.addEventListener('DOMContentLoaded', function () {
         return true; // Si tous les champs sont remplis, retourne true
     }
 
-    // Fonction pour activer ou désactiver le bouton de soumission en fonction de l'état des champs du formulaire
-    function toggleSubmitButton() {
-        if (checkFormValidity()) {
-            submitButton.disabled = false;
-            submitButton.classList.remove('disabled');
-            submitButton.style.backgroundColor = '#1D6154'; // Changez la couleur en vert
-        } else {
-            submitButton.disabled = true;
-            submitButton.classList.add('disabled');
-            submitButton.style.backgroundColor = '#B3B3B3'; // Changez la couleur en gris
-        }
-    }
-
-    // Écouteurs d'événements pour les champs du formulaire
-    uploadForm.addEventListener('input', toggleSubmitButton);
+    // Eventlistener pour les champs du formulaire
+    uploadForm.addEventListener('input', () => {
+    // La propriété disabled est définie par le résultat de la vérification de la validité du formulaire
+    submitButton.disabled = !checkFormValidity();
+    // La classe 'disabled' est ajoutée/retirée en fonction de la validité du formulaire
+    submitButton.classList.toggle('disabled', !checkFormValidity());
+    // La couleur de fond est définie en vert si le formulaire est valide, sinon elle reste grise
+    submitButton.style.backgroundColor = checkFormValidity() ? '#1D6154' : '#B3B3B3';
+    });
 
     // Écouteur d'événement pour la soumission du formulaire
     uploadForm.addEventListener('submit', function (event) {
@@ -94,27 +86,42 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
    //Fonction pour charger les catégories depuis l'API et les afficher dans le menu déroulant
-    function loadCategories() {
-    fetch("http://localhost:5678/api/categories")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erreur lors du chargement des catégories');
-        }
-        return response.json();
-    })
-    .then(categories => {
-        //Itère sur chaque catégorie dans les données récupérées
-        categories.forEach(category => {
-            const option = document.createElement("option"); // Crée un élément <option> pour chaque catégorie
-            option.value = category.id; // Définit la valeur de l'option comme l'ID de la catégorie
-            option.textContent = category.name; // Définit le texte de l'option comme le nom de la catégorie
-            categorySelect.appendChild(option);
-        });
-    })
-    .catch(error => {
-        console.error(error.message);
-    });
+   function loadCategories() {
+    const categorySelect = document.getElementById("category");
+    if (!categorySelect) {
+        console.error("L'élément categorySelect est introuvable.");
+        return;
     }
+
+    fetch("http://localhost:5678/api/categories")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement des catégories');
+            }
+            return response.json();
+        })
+        .then(categories => {
+            categorySelect.innerHTML = "";
+
+            // Ajoute l'option "Sélectionner une catégorie"
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '0'; // La valeur vide
+            defaultOption.textContent = 'Sélectionner une catégorie';
+            categorySelect.appendChild(defaultOption);
+
+            // Itère sur chaque catégorie dans les données récupérées
+            categories.forEach(category => {
+                const option = document.createElement("option"); // Crée un élément <option> pour chaque catégorie
+                option.value = category.id; // Définit la valeur de l'option comme l'ID de la catégorie
+                option.textContent = category.name; // Définit le texte de l'option comme le nom de la catégorie
+                categorySelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error(error.message);
+        });
+}
+
 
     loadCategories();
 
@@ -150,11 +157,5 @@ document.addEventListener('DOMContentLoaded', function () {
         window.parent.location.href = 'index.html';
     });
 
-    returnButton.addEventListener("click", () => {
-        window.history.back();
-    // Redirection vers la page précédente
-  //  window.location.href = 'index.html';
-    // Après la redirection, déplacez le curseur vers l'élément #portfolio-edit-button
-    //window.location.hash = '#portfolio-edit-button';
-});
+      
 });
