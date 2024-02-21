@@ -122,6 +122,15 @@ function refreshModalContent() {
     .catch(error => {
         console.error('Erreur lors de la récupération des données de la galerie :', error);
     });
+    //test
+    // Effacer le contenu de form-content
+    const formContent = document.getElementById('form-content');
+    formContent.innerHTML = '';
+
+    // Charger à nouveau le contenu de la modal
+    loadModalContent();
+
+    //fin test
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -182,15 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //Au clic du bouton ajouter une image, ouverture de la fenêtre formulaire
         buttonAddImg.addEventListener('click', () => {
-            const iframe = document.createElement('iframe');
-            iframe.src = 'modal.html';
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-
-            const modalContent = document.querySelector('.modal-content');
-            modalContent.innerHTML = ''; //efface le contenu existant
-            modalContent.appendChild(iframe); //ajout de l'iframe au contenu de la modal
-
             //Récupération des catégories pour le formulaire
             fetch('http://localhost:5678/api/categories', {
                 method: 'GET',
@@ -227,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function () {
             overlay.style.display = 'block';
             refreshModalContent(); // Appel de la fonction pour rafraîchir le contenu de la modal
             // Utilisation de history.pushState pour modifier l'URL sans recharger la page
-            history.pushState({ modalOpen: true }, null, window.location.href + '#modal'); //test
         }
         openModalButton.addEventListener('click', openModal); // Appel de la fonction openModal lors du clic sur le bouton
 
@@ -235,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'none';
             overlay.style.display = 'none';
             resetModalPage();
-            window.location.reload();
+            window.parent.location.href = 'index.html';
         });
 
         window.addEventListener('keydown', (event) => { //La modal se ferme si on appuie sur "echappe"
@@ -243,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.style.display = 'none';
                 overlay.style.display = 'none';
                 resetModalPage();
-                window.location.reload();
+                window.parent.location.href = 'index.html';
             }
         });
     
@@ -252,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.style.display = 'none';
                 overlay.style.display = 'none';
                 resetModalPage();
-                window.location.reload();
+                window.parent.location.href = 'index.html';
             }
         });
 //
@@ -279,16 +278,25 @@ document.addEventListener('DOMContentLoaded', function () {
             buttonAddImg.textContent = 'Ajouter une image';
             modalContent.appendChild(buttonAddImg);
         
-            buttonAddImg.addEventListener('click', () => {
-                const iframe = document.createElement('iframe');
-                iframe.src = 'modal.html';
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                modalContent.innerHTML = '';
-                modalContent.appendChild(iframe);
-            });
         }
         
+        buttonAddImg.addEventListener('click', () => {
+            fetch('modal.html') 
+               .then(response => response.text())
+               .then(html => {
+                   // Remplace le contenu actuel de la modal par le contenu de modal.html
+                   modalContent.innerHTML = html;
+                   // Eventlistener sur le bouton de retour pour recharger le contenu de la modal
+                   const returnButton = document.getElementById('returnButton');
+                    returnButton.addEventListener('click', refreshModalContent);
+               })
+               .catch(error => {
+                   console.error('Une erreur s\'est produite lors du chargement du formulaire :', error);
+               });
+               
+        });
+        
+
     } else {
         barAdmin.style.display = "none";
     }
