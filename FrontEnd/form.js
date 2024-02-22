@@ -68,17 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            console.log('Photo téléversée avec succès !');
-    
-            const iframe = document.querySelector('iframe');
-            if (iframe) {
-                iframe.remove(); // Supprime complètement l'élément iframe du DOM
-            }
-    
+            // Ferme la modalité en changeant son style pour le rendre invisible
+            myModal.style.display = 'none';
             //Enregistre dans le stockage local du navigateur que le formulaire a été soumis
             localStorage.setItem('formSubmitted', 'true');
-            //Redirection de l'utilisateur
-            window.location.href = 'index.html'; //A modifier
+            //Redirection de l'utilisateur depuis la fenêtre parent
+            window.parent.location.href = 'index.html';
         })
         .catch(error => {
             console.error(error.message);

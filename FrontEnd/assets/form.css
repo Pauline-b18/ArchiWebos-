@@ -1,4 +1,4 @@
-.modal-title {
+.modal-title-form {
     color: black;
     font-size: 26px;
     font-family: 'Work Sans';
@@ -8,6 +8,7 @@
     margin-bottom: 50px;
     padding: 0;
 }
+
 
 .close i {
     position: absolute;
@@ -57,7 +58,7 @@
 #photo-preview {
     width: 20%;
     position: absolute;
-    bottom: 455px;
+    bottom: 453px;
     left: 40%;
 }
 

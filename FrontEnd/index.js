@@ -59,13 +59,36 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /////////////////////////////////// PARTIE ADMINISTRATEUR ET MODAL ////////////////////////////////////
-function refreshModalContent() {
+export function refreshModalContent() {
     fetch('http://localhost:5678/api/works', {
         method: 'GET'
     })
     .then(response => response.json())
     .then(data => {
         const modalContent = document.querySelector('.modal-content');
+        modalContent.innerHTML = ''; // Supprime le contenu
+
+        // Ajout du titre de la modal
+        const modalTitle = document.createElement('h1');
+        modalTitle.className = 'modal-title';
+        modalTitle.textContent = 'Galerie photo';
+        modalContent.appendChild(modalTitle);
+
+        // Ajout de l'icône de fermeture
+        const closeSpan = document.createElement('span');
+        closeSpan.className = 'close';
+        closeSpan.id = 'close';
+        const closeIcon = document.createElement('i');
+        closeIcon.className = 'fa-solid fa-xmark';
+        closeSpan.appendChild(closeIcon);
+        modalContent.appendChild(closeSpan);
+
+        // Ajout du bouton "Ajouter une image"
+        const buttonAddImg = document.createElement('button');
+        buttonAddImg.textContent = 'Ajouter une image';
+        buttonAddImg.classList.add('button-add-img');
+        modalContent.appendChild(buttonAddImg);
+
         const imageBlockContainer = document.createElement('div');
         imageBlockContainer.classList.add('image-block-container');
 
@@ -78,7 +101,7 @@ function refreshModalContent() {
             imageElement.classList.add('modal-image');
             imageContainer.appendChild(imageElement);
             
-            //Suppression des travaux
+            // Suppression des travaux
             const deleteButton = document.createElement('button');
             deleteButton.classList.add('icon-button');
             const deleteIcon = document.createElement('i');
@@ -88,13 +111,13 @@ function refreshModalContent() {
                 const confirmDelete = confirm('Souhaitez-vous supprimer cette image ?');
                 if (confirmDelete) {
                     const token = localStorage.getItem('token');
-                    if (!token) { //Vérifie si le token est présent
+                    if (!token) { // Vérifie si le token est présent
                         console.error('Token d\'authentification manquant.');
                         return;
                     }
                     
                     const headers = new Headers();
-                    headers.append('Authorization', `Bearer ${token}`); //Ajoute le token d'authentification au headers de la requête
+                    headers.append('Authorization', `Bearer ${token}`); // Ajoute le token d'authentification au headers de la requête
 
                     fetch(`http://localhost:5678/api/works/${imageData.id}`, {
                         method: 'DELETE',
@@ -119,6 +142,30 @@ function refreshModalContent() {
         grayBorder.classList.add('gray-border');
         modalContent.appendChild(grayBorder);
 
+        // Ajout du gestionnaire d'événements pour le bouton "Ajouter une image"
+        buttonAddImg.addEventListener('click', () => {
+            const iframe = document.createElement('iframe');
+            iframe.src = 'modal.html';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+
+            modalContent.innerHTML = ''; // Efface le contenu actuel de la modal
+            modalContent.appendChild(iframe); // Ajoute l'iframe à la modal
+
+            // Attend que le contenu de l'iframe soit chargé
+            iframe.onload = function() {
+                // Récupère le document à l'intérieur de l'iframe
+                const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                // Récupère le bouton de retour à l'intérieur de l'iframe
+                const returnButton = iframeDocument.getElementById('returnButton');
+                
+                // Ajoute un gestionnaire d'événements au bouton de retour
+                returnButton.addEventListener('click', () => {
+                    refreshModalContent(); // Rafraîchit le contenu de la modal
+                });
+            };
+        });
+
     })
     .catch(error => {
         console.error('Erreur lors de la récupération des données de la galerie :', error);
@@ -129,12 +176,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const storedToken = localStorage.getItem('token');
     const barAdmin = document.querySelector(".black-bar");
     const filtersContainer = document.getElementById('filters');
+    const modal = document.createElement('div');
+    modal.id = 'myModal';
+    modal.className = 'modal';
+    const modalContent = document.createElement('div');
+    modalContent.id = 'modalContent';
+    modalContent.className = 'modal-content';
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal); // Ajout de la modal dans le DOM
 
     if (storedToken) {
         barAdmin.style.display = "block";
         filtersContainer.style.display = "none";
 
-        //Création bouton modifier
+        // Création bouton modifier
         function createEditButtonPortfolio() {
             const editButtonPortfolio = document.createElement('button');
             editButtonPortfolio.className = 'edit-button';
@@ -143,73 +198,15 @@ document.addEventListener('DOMContentLoaded', function () {
             icon.className = 'fa-regular fa-pen-to-square';
             editButtonPortfolio.appendChild(icon);
             editButtonPortfolio.appendChild(document.createTextNode(' modifier'));
-
-    return editButtonPortfolio;
+            return editButtonPortfolio;
         }
 
         const portfolioSection = document.getElementById('portfolio');
-        const portfolioEditButton = createEditButtonPortfolio(); // a modif
+        const portfolioEditButton = createEditButtonPortfolio();
         portfolioSection.insertBefore(portfolioEditButton, portfolioSection.firstElementChild);
-
-        // Création de la modal
-        const modal = document.createElement('div');
-        modal.id = 'myModal';
-        modal.className = 'modal';
-
-        const modalContent = document.createElement('div');
-        modalContent.id ='modalContent';
-        modalContent.className = 'modal-content';
-
-        const closeSpan = document.createElement('span');
-        closeSpan.className = 'close';
-        closeSpan.id = 'close';
-        const closeIcon = document.createElement('i');
-        closeIcon.className = 'fa-solid fa-xmark';
-        closeSpan.appendChild(closeIcon);
-        modalContent.appendChild(closeSpan);
-
-        const modalTitle = document.createElement('h1');
-        modalTitle.className = 'modal-title';
-        modalTitle.id ='modal-title';
-        modalTitle.textContent = 'Galerie photo';
-        modalContent.appendChild(modalTitle);
-
-        modal.appendChild(modalContent);
-
-        //Bouton ajouter une image
-        const buttonAddImg = document.createElement('button');
-        buttonAddImg.textContent = 'Ajouter une image';
-        buttonAddImg.classList.add('button-add-img');
-        modalContent.appendChild(buttonAddImg);
-
-        //Au clic du bouton ajouter une image, ouverture de la fenêtre formulaire
-        buttonAddImg.addEventListener('click', () => {
-            //Récupération des catégories pour le formulaire
-            fetch('http://localhost:5678/api/categories', {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then(categories => {
-                    const categorySelect = document.getElementById('category');
-                    categories.forEach(category => {
-                        const option = document.createElement('option'); //Création du menu déroulant
-                        option.value = category.id;
-                        option.textContent = category.name;
-                        categorySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la récupération des catégories :', error);
-                });
-        });
-
-        modalContent.appendChild(buttonAddImg);
-        modal.appendChild(modalContent);
-        document.body.appendChild(modal); //modal placé dans le body, sous le main-container
 
         // Partie qui gère l'ouverture de la modal
         const openModalButton = document.getElementById('portfolio-edit-button');
-        const closeModal = document.getElementById('close');
         const overlay = document.createElement('div'); // fond gris derrière la modal
         overlay.id = 'overlay';
         overlay.className = 'overlay';
@@ -219,18 +216,20 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'block';
             overlay.style.display = 'block';
             refreshModalContent(); // Appel de la fonction pour rafraîchir le contenu de la modal
-            // Utilisation de history.pushState pour modifier l'URL sans recharger la page
         }
+
         openModalButton.addEventListener('click', openModal); // Appel de la fonction openModal lors du clic sur le bouton
 
-        closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-            overlay.style.display = 'none';
-            resetModalPage();
-            window.parent.location.href = 'index.html';
+        document.addEventListener('click', (event) => {
+            if (event.target === modal || event.target === document.getElementById('close')) {
+                modal.style.display = 'none';
+                overlay.style.display = 'none';
+                resetModalPage();
+                window.parent.location.href = 'index.html';
+            }
         });
 
-        window.addEventListener('keydown', (event) => { //La modal se ferme si on appuie sur "echappe"
+        window.addEventListener('keydown', (event) => { //La modal se ferme si on appuie sur la touche "echappe"
             if (event.key === 'Escape') {
                 modal.style.display = 'none';
                 overlay.style.display = 'none';
@@ -238,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.parent.location.href = 'index.html';
             }
         });
-    
+
         overlay.addEventListener('click', (event) => { //La modal se ferme si on clique en dehors (sur l'overlay)
             if (event.target === overlay) {
                 modal.style.display = 'none';
@@ -247,63 +246,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.parent.location.href = 'index.html';
             }
         });
-//
-//
+
         function resetModalPage() { 
             const modalContent = document.querySelector('.modal-content');
-        
-            const closeSpan = document.createElement('span');
-            closeSpan.className = 'close';
-            closeSpan.id = 'close';
-            const closeIcon = document.createElement('i');
-            closeIcon.className = 'fa-solid fa-xmark';
-            closeSpan.appendChild(closeIcon);
-            modalContent.appendChild(closeSpan);
-        
-            const modalTitle = document.createElement('h1');
-            modalTitle.className = 'modal-title';
-            modalTitle.textContent = 'Galerie photo';
-            modalContent.appendChild(modalTitle);
-        
-            const buttonAddImg = document.createElement('button');
-            buttonAddImg.className = 'button-add-img';
-            buttonAddImg.id = 'buttonAddImg';
-            buttonAddImg.textContent = 'Ajouter une image';
-            modalContent.appendChild(buttonAddImg);
-        
+            modalContent.innerHTML = ''; //Supprime le contenu
         }
-        
-        buttonAddImg.addEventListener('click', () => {
-            const iframe = document.createElement('iframe');
-            iframe.src = 'modal.html';
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-        
-            modalContent.innerHTML = ''; // Efface le contenu actuel de la modal
-            modalContent.appendChild(iframe); // Ajoute l'iframe à la modal
-        
-            // Attend que le contenu de l'iframe soit chargé
-            iframe.onload = function() {
-                // Récupère le document à l'intérieur de l'iframe
-                const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                // Récupère le bouton de retour à l'intérieur de l'iframe
-                const returnButton = iframeDocument.getElementById('returnButton');
-                
-                // Ajoute un gestionnaire d'événements au bouton de retour
-                returnButton.addEventListener('click', () => {
-                    openModal(); // Rafraîchit le contenu de la modal
-                    iframe.remove(); // Supprime l'iframe du DOM
-                    // const modalTitle = document.getElementById('modal-title');
-                    // const buttonAddImg = document.getElementById('buttonAddImg');
-                    // modalTitle.style.display='block';
-                    // buttonAddImg.style.display='block';
-                });
-            };
-        });
-        
 
     } else {
         barAdmin.style.display = "none";
     }
 });
-
