@@ -165,3 +165,8 @@
     top: 130px;
     left: 170px;
 }
+
+#form-error-message {
+    color: red;
+    text-align: center;
+}

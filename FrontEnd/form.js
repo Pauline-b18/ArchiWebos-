@@ -12,30 +12,69 @@ document.addEventListener('DOMContentLoaded', function () {
     const formContent = document.getElementById("form-content");
     const submitButton = document.querySelector('.submit-button'); // Sélectionnez le bouton de soumission
 
+    
     // Fonction pour vérifier si tous les champs du formulaire sont remplis
     function checkFormValidity() {
-        const inputs = uploadForm.querySelectorAll('input, select');
-        for (let input of inputs) {
-            if (!input.value) {
-                return false; // Si un champ est vide, retourne false
-            }
+        const titleInput = document.getElementById('title');
+        const categorySelect = document.getElementById('category');
+        const photoInput = document.getElementById('image');
+        const errorMessage = document.getElementById('form-error-message');
+    
+        // Vérifie si l'un des trois champs est vide
+        if (!titleInput.value.trim() || categorySelect.value === '0' || !photoInput.files.length) {
+            errorMessage.textContent = 'Veuillez renseigner tous les champs du formulaire.';
+            errorMessage.style.display = 'block';
+            return false; // Retourne false car un champ est vide
+        } else {
+            // Si tous les champs sont remplis, masque le message d'erreur s'il existe
+            errorMessage.textContent = '';
+            errorMessage.style.display = 'none';
+            return true; // Retourne true car tous les champs sont remplis
         }
-        return true; // Si tous les champs sont remplis, retourne true
     }
 
     // Eventlistener pour les champs du formulaire
     uploadForm.addEventListener('input', () => {
-    // La propriété disabled est définie par le résultat de la vérification de la validité du formulaire
-    submitButton.disabled = !checkFormValidity();
-    // La classe 'disabled' est ajoutée/retirée en fonction de la validité du formulaire
-    submitButton.classList.toggle('disabled', !checkFormValidity());
-    // La couleur de fond est définie en vert si le formulaire est valide, sinon elle reste grise
-    submitButton.style.backgroundColor = checkFormValidity() ? '#1D6154' : '#B3B3B3';
+        // La propriété disabled est définie par le résultat de la vérification de la validité du formulaire
+        submitButton.disabled = !checkFormValidity();
+        // La classe 'disabled' est ajoutée/retirée en fonction de la validité du formulaire
+        submitButton.classList.toggle('disabled', !checkFormValidity());
+        // La couleur de fond est définie en vert si le formulaire est valide, sinon elle reste grise
+        submitButton.style.backgroundColor = checkFormValidity() ? '#1D6154' : '#B3B3B3';
     });
 
     // Écouteur d'événement pour la soumission du formulaire
     uploadForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Empeche le rechargement par défaut de la page
+        event.preventDefault(); // Empêche le rechargement par défaut de la page
+
+        // Fonction pour vérifier si tous les champs du formulaire sont remplis
+        function checkFormValidity() {
+            const titleInput = document.getElementById('title');
+            const categorySelect = document.getElementById('category');
+            const photoInput = document.getElementById('image');
+
+            // Vérifie si l'un des trois champs est vide
+            if (!titleInput.value.trim() || categorySelect.value === '0' || !photoInput.files.length) {
+                const errorMessage = document.getElementById('title-error-message');
+                if (!errorMessage) {
+                    const errorElement = document.createElement('p');
+                    errorElement.id = 'title-error-message';
+                    errorElement.textContent = 'Veuillez renseigner tous les champs du formulaire.';
+                    errorElement.style.color = 'red';
+                    // Ajoute l'erreur après le champ du titre
+                    titleInput.parentNode.insertBefore(errorElement, titleInput.nextSibling);
+                }
+                return false; // Retourne false car un champ est vide
+            } else {
+                // Si tous les champs sont remplis, supprime le message d'erreur s'il existe
+                const errorMessage = document.getElementById('title-error-message');
+                if (errorMessage) {
+                    errorMessage.parentNode.removeChild(errorMessage);
+                }
+                return true; // Retourne true car tous les champs sont remplis
+            }
+        }
+
         // Vérifie si tous les champs sont remplis avant de soumettre le formulaire
         if (checkFormValidity()) {
             const formData = new FormData(uploadForm); // Crée un objet FormData contenant les données du formulaire
