@@ -59,7 +59,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /////////////////////////////////// PARTIE ADMINISTRATEUR ET MODAL ////////////////////////////////////
-export function refreshModalContent() {
+
+// Fonction pour créer et rafraîchir le contenu de la modal
+function refreshModalContent() {
     fetch('http://localhost:5678/api/works', {
         method: 'GET'
     })
@@ -165,7 +167,6 @@ export function refreshModalContent() {
                 });
             };
         });
-
     })
     .catch(error => {
         console.error('Erreur lors de la récupération des données de la galerie :', error);
@@ -220,30 +221,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
         openModalButton.addEventListener('click', openModal); // Appel de la fonction openModal lors du clic sur le bouton
 
+
+        // Partie qui gère la fermeture de la modal 
+
+        function closeModal() {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+            resetModalPage();
+            window.parent.location.href = 'index.html';
+        }
+    
         document.addEventListener('click', (event) => {
-            if (event.target === modal || event.target === document.getElementById('close')) {
-                modal.style.display = 'none';
-                overlay.style.display = 'none';
-                resetModalPage();
-                window.parent.location.href = 'index.html';
+            if (event.target === modal || event.target.closest('.close')) { //La modal se ferme si on appuie sur l'icone croix
+                closeModal(); 
             }
         });
-
+    
         window.addEventListener('keydown', (event) => { //La modal se ferme si on appuie sur la touche "echappe"
             if (event.key === 'Escape') {
-                modal.style.display = 'none';
-                overlay.style.display = 'none';
-                resetModalPage();
-                window.parent.location.href = 'index.html';
+                closeModal();
             }
         });
-
+    
         overlay.addEventListener('click', (event) => { //La modal se ferme si on clique en dehors (sur l'overlay)
             if (event.target === overlay) {
-                modal.style.display = 'none';
-                overlay.style.display = 'none';
-                resetModalPage();
-                window.parent.location.href = 'index.html';
+                closeModal();
             }
         });
 
