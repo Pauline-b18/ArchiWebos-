@@ -118,19 +118,11 @@ function refreshModalContent() {
         const grayBorder = document.createElement('div');
         grayBorder.classList.add('gray-border');
         modalContent.appendChild(grayBorder);
+
     })
     .catch(error => {
         console.error('Erreur lors de la récupération des données de la galerie :', error);
     });
-    //test
-    // Effacer le contenu de form-content
-    const formContent = document.getElementById('form-content');
-    formContent.innerHTML = '';
-
-    // Charger à nouveau le contenu de la modal
-    loadModalContent();
-
-    //fin test
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -178,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const modalTitle = document.createElement('h1');
         modalTitle.className = 'modal-title';
+        modalTitle.id ='modal-title';
         modalTitle.textContent = 'Galerie photo';
         modalContent.appendChild(modalTitle);
 
@@ -281,19 +274,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         buttonAddImg.addEventListener('click', () => {
-            fetch('modal.html') 
-               .then(response => response.text())
-               .then(html => {
-                   // Remplace le contenu actuel de la modal par le contenu de modal.html
-                   modalContent.innerHTML = html;
-                   // Eventlistener sur le bouton de retour pour recharger le contenu de la modal
-                   const returnButton = document.getElementById('returnButton');
-                    returnButton.addEventListener('click', refreshModalContent);
-               })
-               .catch(error => {
-                   console.error('Une erreur s\'est produite lors du chargement du formulaire :', error);
-               });
-               
+            const iframe = document.createElement('iframe');
+            iframe.src = 'modal.html';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+        
+            modalContent.innerHTML = ''; // Efface le contenu actuel de la modal
+            modalContent.appendChild(iframe); // Ajoute l'iframe à la modal
+        
+            // Attend que le contenu de l'iframe soit chargé
+            iframe.onload = function() {
+                // Récupère le document à l'intérieur de l'iframe
+                const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                // Récupère le bouton de retour à l'intérieur de l'iframe
+                const returnButton = iframeDocument.getElementById('returnButton');
+                
+                // Ajoute un gestionnaire d'événements au bouton de retour
+                returnButton.addEventListener('click', () => {
+                    openModal(); // Rafraîchit le contenu de la modal
+                    iframe.remove(); // Supprime l'iframe du DOM
+                    // const modalTitle = document.getElementById('modal-title');
+                    // const buttonAddImg = document.getElementById('buttonAddImg');
+                    // modalTitle.style.display='block';
+                    // buttonAddImg.style.display='block';
+                });
+            };
         });
         
 
@@ -301,3 +306,4 @@ document.addEventListener('DOMContentLoaded', function () {
         barAdmin.style.display = "none";
     }
 });
+

@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             console.log('Photo téléversée avec succès !');
     
-            const formElement = document.getElementById('uploadForm');
-            if (formElement) {
-                formElement.remove(); // Supprime complètement le formulaire du DOM
+            const iframe = document.querySelector('iframe');
+            if (iframe) {
+                iframe.remove(); // Supprime complètement l'élément iframe du DOM
             }
     
             //Enregistre dans le stockage local du navigateur que le formulaire a été soumis
