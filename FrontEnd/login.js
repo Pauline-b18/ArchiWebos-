@@ -13,7 +13,7 @@ function ajoutListenerLogin() {
         // Appel de la fonction fetch avec les informations nécessaires
         fetch("http://localhost:5678/api/users/login", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", 'Access-Control-Allow-Origin':'*' },
             body: chargeUtile
         })
         .then(response => {

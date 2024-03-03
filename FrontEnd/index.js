@@ -2,23 +2,28 @@
 document.addEventListener('DOMContentLoaded', function() {
     const gallery = document.getElementById('gallery'); //Endroit où les images seront affichées
     const filtersContainer = document.getElementById('filters'); // Conteneur filtres
-    // Définit les catégories de filtres avec l'ID et noms
-    const categories = [
-        { id: -1, name: 'Tous' },
-        { id: 1, name: 'Objets' },
-        { id: 2, name: 'Appartements' },
-        { id: 3, name: 'Hôtels & restaurants' }
-    ];
-    // Création des boutons filtres en utilisant les catégories
-    categories.forEach(category => {
-        const button = document.createElement('button');
-        button.textContent = category.name; // Texte du bouton en fonction du nom de la catégorie
-        button.setAttribute('data-category', category.id); // Attribut pour stocker l'ID de catégorie
-        filtersContainer.appendChild(button);
-    });
+
+    if (filtersContainer) {
+        // Définit les catégories de filtres avec l'ID et noms
+        const categories = [
+            { id: -1, name: 'Tous' },
+            { id: 1, name: 'Objets' },
+            { id: 2, name: 'Appartements' },
+            { id: 3, name: 'Hôtels & restaurants' }
+        ];
+        // Création des boutons filtres en utilisant les catégories
+        categories.forEach(category => {
+            const button = document.createElement('button');
+            button.textContent = category.name; // Texte du bouton en fonction du nom de la catégorie
+            button.setAttribute('data-category', category.id); // Attribut pour stocker l'ID de catégorie
+            filtersContainer.appendChild(button);
+        });
+    } 
     // Fonction pour filtrer et afficher les images en fonction de la catégorie
     function filterAndDisplayImages(categoryId, data) {
-        gallery.innerHTML = '';
+        if (gallery) {
+            gallery.innerHTML = '';
+        }
         // Filtre en fonction de la catégorie sélectionnée avec l'utilisation de la méthode filter()
         const filteredImages = data.filter(image => categoryId === -1 || image.categoryId === categoryId); //s'affiche si -1 (tous) et si correspond à la catégorie sélectionnée
         // Parcours les images filtrées et les affiche
@@ -31,7 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
             figcaption.textContent = image.title; // Texte en légendre (titre)
             figure.appendChild(img); 
             figure.appendChild(figcaption); 
-            gallery.appendChild(figure);
+            if (gallery) {
+                gallery.appendChild(figure);
+            }
         });
     }
     // Appel à l'API pour récupérer les données des travaux de la galerie
@@ -41,24 +48,60 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
         filterAndDisplayImages(-1, data); // Affiche toutes les images par défaut
-        const filterButtons = filtersContainer.querySelectorAll('button'); // Sélectionne tous les boutons de filtres
         
-        // Ajoute d'un Eventlistener pour chaque bouton de filtre
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault(); // Empeche le rechargement par défaut
-                // Récupère l'ID de la catégorie à partir de l'attribut 'data-category' du bouton
-                const categoryId = parseInt(button.getAttribute('data-category'));
-                filterAndDisplayImages(categoryId, data); // Filtre et affiche les images
+        const filtersContainer = document.getElementById('filters'); 
+
+        if (filtersContainer) {
+            const filterButtons = filtersContainer.querySelectorAll('button'); // Sélectionne tous les boutons de filtres
+            // Ajoute d'un Eventlistener pour chaque bouton de filtre
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Empeche le rechargement par défaut
+                    // Récupère l'ID de la catégorie à partir de l'attribut 'data-category' du bouton
+                    const categoryId = parseInt(button.getAttribute('data-category'));
+                    filterAndDisplayImages(categoryId, data); // Filtre et affiche les images
+                });
             });
-        });
+        }
     })
     .catch(error => {
-        console.error('Une erreur s\'est produite:', error);
+        console.error(error.message);
     });
 });
 
 /////////////////////////////////// PARTIE ADMINISTRATEUR ET MODAL ////////////////////////////////////
+
+function deleteAndUpdateModal(modalContent, imageContainer, imageData) {
+    const confirmDelete = confirm('Souhaitez-vous supprimer cette image ?');
+    if (confirmDelete) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token d\'authentification manquant.');
+            return;
+        }
+
+        fetch(`http://localhost:5678/api/works/${imageData.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` //Ajoute un en-tête 'Authorization' contenant le jeton d'authentification
+            }
+        })
+        .then(() => {
+            imageContainer.style.display = 'none';
+            // Enlève également l'image de la page d'accueil
+            const homeFigures = document.querySelectorAll('.gallery figure');
+            homeFigures.forEach(homeFigure => { //parcours chaque figure
+                const image = homeFigure.querySelector('img');
+                if (image && image.src === imageData.imageUrl) { //Vérifie si l'élement img existe et si son URL correspond à celui de l'image supprimée
+                    homeFigure.parentNode.removeChild(homeFigure); //Si c'est le cas, supprime complètement la figure parente de l'image de la page d'accueil.
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Erreur lors de la suppression de l\'image :', error);
+        });
+    }
+}
 
 // Fonction pour créer et rafraîchir le contenu de la modal
 function refreshModalContent() {
@@ -94,6 +137,7 @@ function refreshModalContent() {
         const imageBlockContainer = document.createElement('div');
         imageBlockContainer.classList.add('image-block-container');
 
+        
         data.forEach(imageData => {
             const imageContainer = document.createElement('div');
             imageContainer.classList.add('image-container');
@@ -110,28 +154,7 @@ function refreshModalContent() {
             deleteIcon.className = 'fa-solid fa-trash-can';
             deleteButton.appendChild(deleteIcon);
             deleteButton.addEventListener('click', () => {
-                const confirmDelete = confirm('Souhaitez-vous supprimer cette image ?');
-                if (confirmDelete) {
-                    const token = localStorage.getItem('token');
-                    if (!token) { // Vérifie si le token est présent
-                        console.error('Token d\'authentification manquant.');
-                        return;
-                    }
-                    
-                    const headers = new Headers();
-                    headers.append('Authorization', `Bearer ${token}`); // Ajoute le token d'authentification au headers de la requête
-
-                    fetch(`http://localhost:5678/api/works/${imageData.id}`, {
-                        method: 'DELETE',
-                        headers: headers,
-                    })
-                    .then(() => {
-                        modalContent.removeChild(imageContainer);
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la suppression de l\'image :', error);
-                    });
-                }
+                deleteAndUpdateModal(modalContent, imageContainer, imageData);
             });
 
             imageContainer.appendChild(deleteButton);
@@ -176,6 +199,12 @@ function refreshModalContent() {
 document.addEventListener('DOMContentLoaded', function () {
     const storedToken = localStorage.getItem('token');
     const barAdmin = document.querySelector(".black-bar");
+        if (storedToken && barAdmin) {
+            barAdmin.style.display = "block";
+
+        } else if (barAdmin) {
+            barAdmin.style.display = "none";
+        }
     const filtersContainer = document.getElementById('filters');
     const modal = document.createElement('div');
     modal.id = 'myModal';
@@ -187,9 +216,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(modal); // Ajout de la modal dans le DOM
 
     if (storedToken) {
-        barAdmin.style.display = "block";
-        filtersContainer.style.display = "none";
-
+        if (filtersContainer) {
+            filtersContainer.style.display = "none";
+        }
         // Création bouton modifier
         function createEditButtonPortfolio() {
             const editButtonPortfolio = document.createElement('button');
@@ -204,7 +233,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const portfolioSection = document.getElementById('portfolio');
         const portfolioEditButton = createEditButtonPortfolio();
-        portfolioSection.insertBefore(portfolioEditButton, portfolioSection.firstElementChild);
+        if (portfolioSection && portfolioEditButton) {
+            portfolioSection.insertBefore(portfolioEditButton, portfolioSection.firstElementChild);
+        }
 
         // Partie qui gère l'ouverture de la modal
         const openModalButton = document.getElementById('portfolio-edit-button');
@@ -219,8 +250,9 @@ document.addEventListener('DOMContentLoaded', function () {
             refreshModalContent(); // Appel de la fonction pour rafraîchir le contenu de la modal
         }
 
-        openModalButton.addEventListener('click', openModal); // Appel de la fonction openModal lors du clic sur le bouton
-
+        if (openModalButton) {
+            openModalButton.addEventListener('click', openModal); // Appel de la fonction openModal lors du clic sur le bouton
+        }
 
         // Partie qui gère la fermeture de la modal 
 
