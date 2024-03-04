@@ -7,80 +7,66 @@ document.addEventListener('DOMContentLoaded', function () {
     const choosePhotoButton = document.querySelector(".choose-photo-button");
     const myModal = document.getElementById("myModal");
     const closeButton = document.getElementById("close");
-    const submitButton = document.querySelector('.submit-button'); // Sélectionne le bouton de soumission
-
+    const submitButton = document.querySelector('.submit-button');
     
+    // Fonction pour afficher le message d'erreur
+    function displayErrorMessage() {
+        const errorMessage = document.getElementById('form-error-message');
+        if (!errorMessage) {
+            const errorElement = document.createElement('p');
+            errorElement.id = 'form-error-message';
+            errorElement.textContent = 'Veuillez renseigner tous les champs du formulaire.';
+            errorElement.style.color = 'red';
+            uploadForm.appendChild(errorElement);
+        }
+    }
+
+    // Fonction pour changer la couleur du bouton de soumission
+    function changeButtonColor() {
+        const titleInput = document.getElementById('title');
+        const categorySelect = document.getElementById('category');
+        const photoInput = document.getElementById('image');
+
+        // Vérifie si tous les champs sont remplis
+        if (titleInput.value.trim() && categorySelect.value !== '0' && photoInput.files.length > 0) {
+            submitButton.style.backgroundColor = '#1D6154'; // Change la couleur du bouton en vert lorsque tous les champs sont remplis
+            // Supprime le message d'erreur s'il est affiché
+            const errorMessage = document.getElementById('form-error-message');
+            if (errorMessage) {
+                errorMessage.remove();
+            }
+        } else {
+            submitButton.style.backgroundColor = ''; // Réinitialise la couleur du bouton s'il y a des champs non remplis
+        }
+    }
+
+    if (uploadForm) {
+        // Écouteur d'événement pour la soumission du formulaire
+        uploadForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            // Vérifie si tous les champs sont remplis avant de soumettre le formulaire
+            if (!checkFormValidity()) {
+                displayErrorMessage(); // Affiche le message d'erreur si le formulaire est invalide
+                return;
+            }
+            const formData = new FormData(uploadForm); // Crée un objet FormData contenant les données du formulaire
+            uploadImage(formData); // Appelle la fonction pour télécharger l'image
+        });
+        
+        // Ajoute des écouteurs d'événements pour chaque champ du formulaire pour vérifier le changement de couleur du bouton de validation
+        document.getElementById('title').addEventListener('input', changeButtonColor);
+        document.getElementById('category').addEventListener('change', changeButtonColor);
+        document.getElementById('image').addEventListener('change', changeButtonColor);
+    }
+
     // Fonction pour vérifier si tous les champs du formulaire sont remplis
     function checkFormValidity() {
         const titleInput = document.getElementById('title');
         const categorySelect = document.getElementById('category');
         const photoInput = document.getElementById('image');
-        const errorMessage = document.getElementById('form-error-message');
-    
-        // Vérifie si l'un des trois champs est vide
-        if (!titleInput.value.trim() || categorySelect.value === '0' || !photoInput.files.length) {
-            errorMessage.textContent = 'Veuillez renseigner tous les champs du formulaire.';
-            errorMessage.style.display = 'block';
-            return false; // Retourne false car un champ est vide
-        } else {
-            // Si tous les champs sont remplis, masque le message d'erreur s'il existe
-            errorMessage.textContent = '';
-            errorMessage.style.display = 'none';
-            return true; // Retourne true car tous les champs sont remplis
-        }
-    }
 
-    if (uploadForm) {
-        // Eventlistener pour les champs du formulaire
-        uploadForm.addEventListener('input', () => {
-            // La propriété disabled est définie par le résultat de la vérification de la validité du formulaire
-            submitButton.disabled = !checkFormValidity();
-            // La classe 'disabled' est ajoutée/retirée en fonction de la validité du formulaire
-            submitButton.classList.toggle('disabled', !checkFormValidity());
-            // La couleur de fond est définie en vert si le formulaire est valide, sinon elle reste grise
-            submitButton.style.backgroundColor = checkFormValidity() ? '#1D6154' : '#B3B3B3';
-        })
-
-            // Écouteur d'événement pour la soumission du formulaire
-        uploadForm.addEventListener('submit', function (event) {
-            event.preventDefault(); // Empêche le rechargement par défaut de la page
-
-            // Fonction pour vérifier si tous les champs du formulaire sont remplis
-            function checkFormValidity() {
-                const titleInput = document.getElementById('title');
-                const categorySelect = document.getElementById('category');
-                const photoInput = document.getElementById('image');
-
-                // Vérifie si l'un des trois champs est vide
-                if (!titleInput.value.trim() || categorySelect.value === '0' || !photoInput.files.length) {
-                    const errorMessage = document.getElementById('title-error-message');
-                    if (!errorMessage) {
-                        const errorElement = document.createElement('p');
-                        errorElement.id = 'title-error-message';
-                        errorElement.textContent = 'Veuillez renseigner tous les champs du formulaire.';
-                        errorElement.style.color = 'red';
-                        // Ajoute l'erreur après le champ du titre
-                        titleInput.parentNode.insertBefore(errorElement, titleInput.nextSibling);
-                    }
-                    return false; // Retourne false car un champ est vide
-                } else {
-                    // Si tous les champs sont remplis, supprime le message d'erreur s'il existe
-                    const errorMessage = document.getElementById('title-error-message');
-                    if (errorMessage) {
-                        errorMessage.parentNode.removeChild(errorMessage);
-                    }
-                    return true; // Retourne true car tous les champs sont remplis
-                }
-            }
-
-            // Vérifie si tous les champs sont remplis avant de soumettre le formulaire
-            if (checkFormValidity()) {
-                const formData = new FormData(uploadForm); // Crée un objet FormData contenant les données du formulaire
-                // Appelle la fonction pour télécharger l'image
-                uploadImage(formData);
-            }
-        });
-        
+        // Vérifie si tous les champs sont remplis
+        return titleInput.value.trim() && categorySelect.value !== '0' && photoInput.files.length > 0;
     }
     
 

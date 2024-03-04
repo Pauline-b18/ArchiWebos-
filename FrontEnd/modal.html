@@ -19,7 +19,7 @@
         <div>
             <a href="#" id="returnButton" ><i class="fas fa-arrow-left"></i></a>
             <span class="close" id="close"><i class="fa-solid fa-xmark"></i></span>
-            <form id="uploadForm" method="post" enctype="multipart/form-data" novalidate> <!-- retire le message d'erreur par défaut-->
+            <form id="uploadForm" method="post" enctype="multipart/form-data" novalidate>
                 <label for="image" class="add-photo-container" id="photoLabel">
                     <i id="photo-icon" class="fas fa-image"></i>
                     <input type="file" id="image" name="image" accept="image/*" style="display: none;" required>
@@ -33,7 +33,6 @@
                 <select id="category" name="category"></select>            
                 <div class="gray-border"></div>           
                 <button id="submit-button" class="submit-button" type="submit">Valider</button>
-                <p id="form-error-message" class="form-error-message"></p>
             </form>
         </div>
     </main>

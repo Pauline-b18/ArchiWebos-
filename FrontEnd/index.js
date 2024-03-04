@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (openModalButton) {
-            openModalButton.addEventListener('click', openModal); // Appel de la fonction openModal lors du clic sur le bouton
+            openModalButton.addEventListener('click', openModal); //Appel de la fonction openModal lors du clic sur le bouton
         }
 
         // Partie qui gère la fermeture de la modal 
