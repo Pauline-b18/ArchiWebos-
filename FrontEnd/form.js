@@ -1,3 +1,15 @@
+//////////////////////////////////////////////////////////////// FORMULAIRE ////////////////////////////////////////////////////////
+
+// Fonction pour vérifier si tous les champs du formulaire sont remplis
+function checkFormValidity() {
+    const titleInput = document.getElementById('title');
+    const categorySelect = document.getElementById('category');
+    const photoInput = document.getElementById('image');
+
+    // Vérifie si tous les champs sont remplis
+    return titleInput.value.trim() && categorySelect.value !== '0' && photoInput.files.length > 0;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const uploadForm = document.getElementById("uploadForm");
     const photoInput = document.getElementById("image");
@@ -8,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const myModal = document.getElementById("myModal");
     const closeButton = document.getElementById("close");
     const submitButton = document.querySelector('.submit-button');
+    const gallery = document.getElementById('gallery');
+
     
     // Fonction pour afficher le message d'erreur
     function displayErrorMessage() {
@@ -53,37 +67,28 @@ document.addEventListener('DOMContentLoaded', function () {
             uploadImage(formData); // Appelle la fonction pour télécharger l'image
         });
         
+        
         // Ajoute des écouteurs d'événements pour chaque champ du formulaire pour vérifier le changement de couleur du bouton de validation
         document.getElementById('title').addEventListener('input', changeButtonColor);
         document.getElementById('category').addEventListener('change', changeButtonColor);
         document.getElementById('image').addEventListener('change', changeButtonColor);
     }
 
-    // Fonction pour vérifier si tous les champs du formulaire sont remplis
-    function checkFormValidity() {
-        const titleInput = document.getElementById('title');
-        const categorySelect = document.getElementById('category');
-        const photoInput = document.getElementById('image');
-
-        // Vérifie si tous les champs sont remplis
-        return titleInput.value.trim() && categorySelect.value !== '0' && photoInput.files.length > 0;
-    }
     
-
-    //Fonction pour envoyer une image vers le serveur
+    // Fonction pour envoyer une image vers le serveur
     function uploadImage(formData) {
         const token = localStorage.getItem('token');
     
-        if (!token) { //Vérifie si le token est présent
+        if (!token) {
             console.error('Token d\'authentification manquant.');
             return;
         }
     
         fetch('http://localhost:5678/api/works', {
             method: 'POST',
-            body: formData, // Utilise les données FormData passées en paramètre
+            body: formData,
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}` // Ajoute un en-tête 'Authorization' contenant le jeton d'authentification
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         })
         .then(response => {
@@ -93,12 +98,35 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            // Ferme la modalité en changeant son style pour le rendre invisible
+            const imageData = {
+                id: data.id,
+                title: data.title,
+                imageUrl: data.imageUrl,
+                categoryId: data.categoryId,
+                userId: data.userId
+            };
+    
+            // Créer un élément figure pour la nouvelle image
+            const figure = document.createElement('figure');
+            const img = document.createElement('img');
+            const figcaption = document.createElement('figcaption');
+            img.src = imageData.imageUrl;
+            img.alt = imageData.title;
+            figcaption.textContent = imageData.title;
+            figure.appendChild(img);
+            figure.appendChild(figcaption);
+    
+            // Ajouter la nouvelle figure à la galerie
+            const gallery = document.getElementById('gallery');
+            if (gallery) {
+                gallery.appendChild(figure);
+            }
+    
+            // Envoie un message à la fenêtre parente pour indiquer que l'image a été ajoutée
+            window.parent.postMessage({ action: 'imageAdded', imageData: imageData }, '*');
+            // Ferme la modal après l'ajout de l'image
+            const myModal = document.getElementById('myModal');
             myModal.style.display = 'none';
-            //Enregistre dans le stockage local du navigateur que le formulaire a été soumis
-            localStorage.setItem('formSubmitted', 'true');
-            //Redirection de l'utilisateur depuis la fenêtre parent
-            window.parent.location.href = 'index.html';
         })
         .catch(error => {
             console.error(error.message);
@@ -107,44 +135,44 @@ document.addEventListener('DOMContentLoaded', function () {
     
    //Fonction pour charger les catégories depuis l'API et les afficher dans le menu déroulant
    function loadCategories() {
-    const categorySelect = document.getElementById("category");
-    if (!categorySelect) {
-        return;
-    }
+        const categorySelect = document.getElementById("category");
+        if (!categorySelect) {
+            return;
+        }
 
-    fetch("http://localhost:5678/api/categories")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur lors du chargement des catégories');
-            }
-            return response.json();
-        })
-        .then(categories => {
-            categorySelect.innerHTML = "";
+        fetch("http://localhost:5678/api/categories")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors du chargement des catégories');
+                }
+                return response.json();
+            })
+            .then(categories => {
+                categorySelect.innerHTML = "";
 
-            // Ajoute l'option "Sélectionner une catégorie"
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '0'; // La valeur vide
-            defaultOption.textContent = 'Sélectionner une catégorie';
-            categorySelect.appendChild(defaultOption);
+                // Ajoute l'option "Sélectionner une catégorie"
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '0'; // La valeur vide
+                defaultOption.textContent = 'Sélectionner une catégorie';
+                categorySelect.appendChild(defaultOption);
 
-            // Itère sur chaque catégorie dans les données récupérées
-            categories.forEach(category => {
-                const option = document.createElement("option"); // Crée un élément <option> pour chaque catégorie
-                option.value = category.id; // Définit la valeur de l'option comme l'ID de la catégorie
-                option.textContent = category.name; // Définit le texte de l'option comme le nom de la catégorie
-                categorySelect.appendChild(option);
+                // Itère sur chaque catégorie dans les données récupérées
+                categories.forEach(category => {
+                    const option = document.createElement("option"); // Crée un élément <option> pour chaque catégorie
+                    option.value = category.id; // Définit la valeur de l'option comme l'ID de la catégorie
+                    option.textContent = category.name; // Définit le texte de l'option comme le nom de la catégorie
+                    categorySelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error(error.message);
             });
-        })
-        .catch(error => {
-            console.error(error.message);
-        });
-}
+    }
 
 
     loadCategories();
 
-    if (photoInput) {
+    if (photoInput) {  // conditions pour l'image
         photoInput.addEventListener('change', (event) => {
             const selectedPhoto = event.target.files[0];
 

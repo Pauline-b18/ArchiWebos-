@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const storedToken = localStorage.getItem('token'); //Vérifie si un token est déjà stocké dans le local storage
+    const storedToken = localStorage.getItem('token'); //Récupération du token d'authentification depuis le localStorage
     const logout = document.querySelector(".logout-button");
     const login = document.querySelector(".login-button");  
 
@@ -15,8 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 );
 
+// Fonction de déconnexion de l'utilisateur
 function deconnexion() {
-    window.localStorage.clear();
+    window.localStorage.clear(); // Efface le token du localStorage
     window.location.href = "./index.html";
   }
   const boutonDeconnexion = document.querySelector('.logout-button');

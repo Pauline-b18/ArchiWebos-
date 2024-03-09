@@ -1,28 +1,48 @@
 // Attend que le DOM soit complètement chargé pour exécuter le code
+let iframe;
 document.addEventListener('DOMContentLoaded', function() {
     const gallery = document.getElementById('gallery'); //Endroit où les images seront affichées
-    const filtersContainer = document.getElementById('filters'); // Conteneur filtres
 
-    if (filtersContainer) {
-        // Définit les catégories de filtres avec l'ID et noms
-        const categories = [
-            { id: -1, name: 'Tous' },
-            { id: 1, name: 'Objets' },
-            { id: 2, name: 'Appartements' },
-            { id: 3, name: 'Hôtels & restaurants' }
-        ];
-        // Création des boutons filtres en utilisant les catégories
-        categories.forEach(category => {
-            const button = document.createElement('button');
-            button.textContent = category.name; // Texte du bouton en fonction du nom de la catégorie
-            button.setAttribute('data-category', category.id); // Attribut pour stocker l'ID de catégorie
-            filtersContainer.appendChild(button);
-        });
-    } 
+    // Fonction pour charger les catégories depuis l'API
+    function loadCategories() {
+        const filtersContainer = document.getElementById('filters');
+        if (!filtersContainer) {
+            return;
+        }
+
+        // Création du bouton "Tous"
+        const allButton = document.createElement('button');
+        allButton.textContent = 'Tous';
+        allButton.setAttribute('data-category', '-1'); //valeur spéciale pour le bouton "Tous"
+        filtersContainer.appendChild(allButton); 
+
+        // Récupération des catégories depuis l'API
+        fetch("http://localhost:5678/api/categories")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors du chargement des catégories');
+                }
+                return response.json();
+            })
+            .then(categories => {
+                categories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.textContent = category.name;
+                    button.setAttribute('data-category', category.id);
+                    filtersContainer.appendChild(button); // Ajout du bouton au conteneur de filtres
+                });
+            })
+            .catch(error => {
+                console.error(error.message);
+            });
+    }
+
+    loadCategories();
+
     // Fonction pour filtrer et afficher les images en fonction de la catégorie
     function filterAndDisplayImages(categoryId, data) {
         if (gallery) {
-            gallery.innerHTML = '';
+            gallery.innerHTML = ''; //efface le contenu pour éviter les duplications 
         }
         // Filtre en fonction de la catégorie sélectionnée avec l'utilisation de la méthode filter()
         const filteredImages = data.filter(image => categoryId === -1 || image.categoryId === categoryId); //s'affiche si -1 (tous) et si correspond à la catégorie sélectionnée
@@ -41,6 +61,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Récupère les nouvelles images depuis le stockage local si le formulaire a été soumis avec succès
+    const formSubmitted = localStorage.getItem('formSubmitted');
+    if (formSubmitted === 'true') {
+        // Affiche les nouvelles images depuis le stockage local
+        const newImageData = JSON.parse(localStorage.getItem('newImage'));
+        if (newImageData) {
+            // Ajoute la nouvelle image à la galerie
+            const figure = document.createElement('figure'); 
+            const img = document.createElement('img'); 
+            const figcaption = document.createElement('figcaption'); 
+            img.src = newImageData.imageUrl; // URL de la source de l'image
+            img.alt = newImageData.title; // Texte alternatif de l'image
+            figcaption.textContent = newImageData.title; // Texte en légendre (titre)
+            figure.appendChild(img); 
+            figure.appendChild(figcaption); 
+            gallery.appendChild(figure);
+        }
+    }
+
     // Appel à l'API pour récupérer les données des travaux de la galerie
     fetch('http://localhost:5678/api/works', {
         method: 'GET'
@@ -71,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /////////////////////////////////// PARTIE ADMINISTRATEUR ET MODAL ////////////////////////////////////
 
+// Fonction qui gère la suppression des travaux dans la modal et sur la page d'accueil
 function deleteAndUpdateModal(modalContent, imageContainer, imageData) {
     const confirmDelete = confirm('Souhaitez-vous supprimer cette image ?');
     if (confirmDelete) {
@@ -137,8 +178,8 @@ function refreshModalContent() {
         const imageBlockContainer = document.createElement('div');
         imageBlockContainer.classList.add('image-block-container');
 
-        
-        data.forEach(imageData => {
+        // parcours chaque élément du tableau data (données des travaux récupérées depuis l'API)
+        data.forEach(imageData => { // pour chaque élément imageData, le code ci dessous est executé
             const imageContainer = document.createElement('div');
             imageContainer.classList.add('image-container');
 
@@ -174,6 +215,8 @@ function refreshModalContent() {
             iframe.style.width = '100%';
             iframe.style.height = '100%';
 
+            
+
             modalContent.innerHTML = ''; // Efface le contenu actuel de la modal
             modalContent.appendChild(iframe); // Ajoute l'iframe à la modal
 
@@ -189,11 +232,51 @@ function refreshModalContent() {
                     refreshModalContent(); // Rafraîchit le contenu de la modal
                 });
             };
+
+            // Ecouteur d'événements pour recevoir les messages de l'iframe
+            window.addEventListener('message', function(event) { 
+                // Vérifie que le message provient de l'iframe
+                if (event.source === iframe.contentWindow) {
+                    const data = event.data;
+                    // On vérifie que le message indique bien que l'image a été ajoutée
+                    if (data && data.action === 'imageAdded') {
+                        // Fermer la modal
+                        const myModal = document.getElementById('myModal');
+                        myModal.style.display = 'none';
+                        // Fermer l'overlay
+                        const overlay = document.getElementById('overlay');
+                        overlay.style.display = 'none';
+                        const imageData = data.imageData;
+                        // Ajouter l'image à la galerie
+                        addImageToGallery(imageData);
+
+                    }
+                }
+            });
+            
         });
     })
     .catch(error => {
         console.error('Erreur lors de la récupération des données de la galerie :', error);
     });
+}
+
+// Fonction pour ajouter l'image à la galerie
+function addImageToGallery(imageData) {
+    // Créer un élément figure pour afficher l'image avec son titre
+    const figure = document.createElement('figure');
+    const img = document.createElement('img');
+    img.src = imageData.imageUrl; // URL de l'image
+    img.alt = imageData.title; // Texte alternatif de l'image
+    const figcaption = document.createElement('figcaption');
+    figcaption.textContent = imageData.title; // Texte en légende (titre)
+    figure.appendChild(img);
+    figure.appendChild(figcaption);
+    // Ajoute la figure à la galerie sur la page principale
+    const gallery = document.getElementById('gallery');
+    if (gallery) {
+        gallery.appendChild(figure);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -215,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.appendChild(modalContent);
     document.body.appendChild(modal); // Ajout de la modal dans le DOM
 
-    if (storedToken) {
+    if (storedToken) { //Si token présent, on passe en mode admin
         if (filtersContainer) {
             filtersContainer.style.display = "none";
         }
@@ -286,7 +369,26 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContent.innerHTML = ''; //Supprime le contenu
         }
 
+    // Gestion de l'événement de soumission du formulaire dans la modalité
+    const submitButton = document.querySelector('.submit-button');
+    if (submitButton) {
+        submitButton.addEventListener('click', () => {
+            const title = document.getElementById('title').value;
+            const imageInput = document.getElementById('image').files[0];
+
+            // Une fois le formulaire soumis avec succès, envoyez un message à la page parente
+            window.parent.postMessage({ type: 'formSubmitted' }, '*');
+            // Envoie un message pour fermer l'overlay dans la fenêtre parente
+            window.parent.postMessage({ action: 'closeOverlay' }, '*');
+
+            // Ajoute l'image à la galerie sur la page d'accueil
+            addImageToGallery(title, imageInput);
+        });
+    }
+
     } else {
         barAdmin.style.display = "none";
     }
 });
+
+

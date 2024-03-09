@@ -1,14 +1,14 @@
 function ajoutListenerLogin() {
     const formLogin = document.querySelector(".form-login");
     formLogin.addEventListener("submit", function (event) {
-        event.preventDefault(); // empêcher le comportement par défaut
+        event.preventDefault(); // empêcher le comportement par défaut (rechargement de page)
 
         const login = {
             email: document.getElementById('email').value,
             password: document.getElementById('password').value,
         };
         // Création de la charge utile au format JSON
-        const chargeUtile = JSON.stringify(login);
+        const chargeUtile = JSON.stringify(login); //L'objet "login" est converti en chaine JSON
 
         // Appel de la fonction fetch avec les informations nécessaires
         fetch("http://localhost:5678/api/users/login", {
